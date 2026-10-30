@@ -445,7 +445,7 @@ nav.tabs button{font-size:9.5px;padding-inline:1px;letter-spacing:-.01em}
       </div>
       <div class="card">
         <h2>Számlák és készpénz</h2>
-        <p class="muted" style="margin:4px 0 6px">Írd be az aktuális egyenlegeket. Bármikor átírhatod.</p>
+        <p class="muted" style="margin:4px 0 6px">Írd be az aktuális egyenlegeket. A beírt bevételek és kiadások ezeket magától mozgatják; ha eltér a valóságtól, egyszerűen írd át.</p>
         <div id="wAcc"></div>
         <div class="wrow"><label for="wEur">Euró<small>összeg euróban</small></label><input id="wEur" inputmode="numeric" placeholder="0"></div>
         <div class="wrow"><label for="wRate">Euró árfolyam<small>Ft / €</small></label><input id="wRate" inputmode="numeric" placeholder="400"></div>
@@ -590,7 +590,7 @@ nav.tabs button{font-size:9.5px;padding-inline:1px;letter-spacing:-.01em}
     <div class="amtquick" id="amtQuick"></div>
     <div class="label" id="catLabel">Mire költötted?</div>
     <div class="catgrid" id="cats"></div>
-    <div class="label" id="acctLabel" hidden>Hova érkezett?</div>
+    <div class="label" id="acctLabel">Hova érkezett?</div>
     <div class="catgrid" id="accts" hidden></div>
     <input id="note" class="note" placeholder="Megjegyzés, ha akarsz" maxlength="60">
     <button class="btn block big" id="addBtn" type="submit">Mentés</button>
@@ -603,7 +603,8 @@ nav.tabs button{font-size:9.5px;padding-inline:1px;letter-spacing:-.01em}
     <div class="muted" style="margin-top:6px">Mennyit költöttél a boltban? Ez nem viszi mínuszba a mai napot.</div>
     <div class="amount"><input id="bAmt" inputmode="numeric" enterkeyhint="done" placeholder="0" aria-label="Összeg forintban"><span>Ft</span></div>
     <div class="amtquick" id="bQuick"></div>
-    <input id="bNote" class="note" placeholder="Hol? (pl. Lidl, Auchan) – nem kötelező" maxlength="40">
+    <div class="label" style="margin-top:14px">Miből fizetted?</div><div class="catgrid" id="bAccts"></div>
+    <input id="bNote" class="note" placeholder="Hol? (pl. Spar, Lidl) – nem kötelező" maxlength="40">
     <div class="entry-hint" id="bHint"></div>
     <button class="btn block big" id="bSave" type="submit">Mehet</button>
   </form>
@@ -642,6 +643,11 @@ var ALTEGIO=[];
 var OUT_CATS=[["sparkaja","Sparos kaja"],["sport","Sport"],["masszazs","Masszázs"],["szepseg","Szépségápolás"],["kepzes","Képzés, könyv"],["csalad","Családi hétvége"],["unokak","Unokák"],["ruha","Ruha, cipő"],["nasi","Nasi"],["kacat","Kacatok"],["faszsag","Bolondságok"],["kozl","Közlekedés"],["mas","Más"],["jutalom","Bónuszból"]];
 var IN_CATS=[["nyugdij","Nyugdíj"],["alberlet","Albérleti díj"],["kliens","Kliensek"],["csoport","Önismereti csoportok"],["gyokossy","Gyökössy Intézet"],["egyebin","Egyéb"]];
 var ACCTS=[["otp","OTP"],["otptart","OTP tartalék"],["revo","Revolut"],["kp","Készpénz"]];
+function acctName(a){var x=ACCTS.filter(function(y){return y[0]===a})[0];return x?x[1]:a}
+function applyAcct(e,sign){if(!e.acct||!S.wealth)return;var d=(e.type==="in"?1:-1)*sign*e.amount;S.wealth.acc[e.acct]=(+S.wealth.acc[e.acct]||0)+d}
+var bAcct=null;
+function renderBAccts(){$("bAccts").innerHTML=ACCTS.map(function(a){return '<button type="button" data-bacct="'+a[0]+'" aria-pressed="'+(a[0]===bAcct)+'">'+a[1]+'</button>'}).join("")}
+document.addEventListener("click",function(e){var b=e.target.closest("[data-bacct]");if(!b)return;bAcct=b.dataset.bacct;renderBAccts()});
 var FIXED_DEFAULT=[["lelek","Lélekcsiholó keret (hiábavalóságok)"],["berlet","Bérlet"],["tel","Telefonszámla"],["albi","Albérlet"],["iroda","Irodabérlet"],["coach","Coach"],["uzenetes","Napi üzenetes"],["mediklub","Mediklub"],["sportb","Sportbérlet"]];
 var CAT_NAME={nagybev:"Nagybevásárlás"};OUT_CATS.concat(IN_CATS).forEach(function(c){CAT_NAME[c[0]]=c[1]});
 
@@ -777,7 +783,7 @@ $("amtQuick").addEventListener("click",function(e){var b=e.target.closest("[data
 var acct=null;
 function renderAccts(){$("accts").innerHTML=ACCTS.map(function(a){return '<button type="button" data-acct="'+a[0]+'" aria-pressed="'+(a[0]===acct)+'">'+a[1]+'</button>'}).join("")}
 $("accts").addEventListener("click",function(e){var b=e.target.closest("[data-acct]");if(!b)return;acct=b.dataset.acct;renderAccts()});
-function openEntry(t,presetCat){type=t;cat=presetCat||null;renderCats();acct=null;renderAccts();$("acctLabel").hidden=$("accts").hidden=(t!=="in");
+function openEntry(t,presetCat){type=t;cat=presetCat||null;renderCats();acct=t==="in"?(S.lastInAcct||"otp"):(S.lastOutAcct||"kp");renderAccts();$("accts").hidden=false;$("acctLabel").hidden=false;$("acctLabel").textContent=t==="in"?"Hova érkezett?":"Miből fizetted?";
   $("amtQuick").innerHTML=AMT_PRESETS[t].map(function(a){return '<button type="button" data-a="'+a+'">'+n0(a)+'</button>'}).join("");
   $("entryTitle").textContent=t==="out"?"Kiadás":"Bevétel";
   $("catLabel").textContent=t==="out"?"Mire költötted?":"Honnan jött?";
@@ -851,15 +857,15 @@ $("addForm").addEventListener("submit",function(e){
   if(!cat){toast(type==="out"?"Nyomd meg, mire ment el":"Nyomd meg, honnan jött");return}
   closeEntry();
   var t=today(),before=dayData(t).spent>limitFor(t);
-  lastAdded=uid();S.entries.push({id:lastAdded,date:t,type:type,amount:a,cat:cat,acct:type==="in"?acct:undefined,note:$("note").value.trim()});
+  lastAdded=uid();var ne={id:lastAdded,date:t,type:type,amount:a,cat:cat,acct:acct||undefined,note:$("note").value.trim()};S.entries.push(ne);applyAcct(ne,1);if(type==="in")S.lastInAcct=acct;else S.lastOutAcct=acct;
   if(type==="out"&&cat==="jutalom"&&a>score().fund+0){toast("Nincs ennyi a bónusz kasszában – sima kiadásként beírva");S.entries[S.entries.length-1].cat="mas"}
   save();resetCache();$("amt").value="";$("note").value="";
   var after=dayData(t).spent>limitFor(t);
   renderAll();
-  if(!before&&after){S.ack[t]=true;save();showVerdict(t,true)}else toast(type==="out"?"Kiadás elkönyvelve":"Bevétel beírva");
+  if(!before&&after){S.ack[t]=true;save();showVerdict(t,true)}else toast((type==="out"?"Kiadás elkönyvelve":"Bevétel beírva")+(ne.acct?" · "+acctName(ne.acct)+": "+(type==="in"?"+":"−")+n0(a)+" Ft":""));
 });
 document.addEventListener("click",function(e){
-  var d=e.target.closest("[data-del]");if(d){S.entries=S.entries.filter(function(x){return x.id!==d.dataset.del});save();resetCache();renderAll();toast("Kukázva");return}
+  var d=e.target.closest("[data-del]");if(d){var de=S.entries.filter(function(x){return x.id===d.dataset.del})[0];if(de)applyAcct(de,-1);S.entries=S.entries.filter(function(x){return x.id!==d.dataset.del});save();resetCache();renderAll();toast("Kukázva");return}
   var g=e.target.closest("[data-go]");if(g)go(g.dataset.go);
 });
 $("closeDay").onclick=function(){var t=today();S.closed[t]=true;S.ack[t]=true;save();resetCache();renderAll();showVerdict(t,true)};
@@ -1071,13 +1077,13 @@ function renderBolt(){
 $("bAddBtn").onclick=function(){var t=today(),ws=weekStart(t),n=weekBig(ws).length;
   $("bHint").textContent=n?"Ezen a héten már volt egy. Ha muszáj, mehet, de a lényeg az, hogy ritkán menj.":"Ez a nap nem megy mínuszba. Az összeg 7 napra oszlik el a keretból.";
   $("bQuick").innerHTML=[15000,20000,30000,40000].map(function(a){return '<button type="button" data-ba="'+a+'">'+n0(a)+'</button>'}).join("");
-  $("bAmt").value="";$("bNote").value="";$("bSheet").hidden=false;setTimeout(function(){$("bAmt").focus()},50)};
+  bAcct=S.lastOutAcct||"kp";renderBAccts();$("bAmt").value="";$("bNote").value="";$("bSheet").hidden=false;setTimeout(function(){$("bAmt").focus()},50)};
 $("bClose").onclick=function(){$("bSheet").hidden=true};
 $("bSheet").addEventListener("click",function(e){if(e.target===this)this.hidden=true});
 $("bAmt").addEventListener("input",function(){var v=digits(this.value);this.value=v==null?"":n0(v)});
 $("bQuick").addEventListener("click",function(e){var b=e.target.closest("[data-ba]");if(b)$("bAmt").value=n0(+b.dataset.ba)});
 $("bForm").addEventListener("submit",function(e){e.preventDefault();var a=digits($("bAmt").value);if(!a){toast("Írd be, mennyi zsé");return}
-  S.entries.push({id:uid(),date:today(),type:"out",amount:a,cat:"nagybev",note:$("bNote").value.trim(),big:true});
+  var be={id:uid(),date:today(),type:"out",amount:a,cat:"nagybev",acct:bAcct||undefined,note:$("bNote").value.trim(),big:true};S.entries.push(be);applyAcct(be,1);if(bAcct)S.lastOutAcct=bAcct;
   $("bSheet").hidden=true;save();renderAll();confetti();toast("Nagybevásárlás beírva. Most egy hétig kerüld a boltot!")});
 
 /* ---------- CÉLOK ---------- */
