@@ -1,0 +1,1261 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>zsuKe$$</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="zsuKe$$">
+<meta name="theme-color" content="#FFF7FA">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="application-name" content="zsuKe$$">
+<link rel="apple-touch-startup-image" href="splash-1206x2622.png" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+<link rel="icon" href="icon-192.png">
+<style>html{padding-top:env(safe-area-inset-top,0px);min-height:100%}body{margin:0}</style>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: egyképernyős telefonos app – fejléc borbélyrúd-csíkkal, középen a napi kör, alul fix fülsáv */
+/* Egyetlen, szándékosan világos téma: fehér alap, pasztell zöld és pasztell rózsaszín */
+
+:root{
+  --bg:#FFF7FA; --surface:#FFFFFF; --surface2:#FBE9F0; --ink:#3A2A33; --muted:#8A7580; --line:#F1D6E0;
+  --accent:#E2679A; --accent-ink:#FFFFFF; --pink:#F4A6C3; --pink-bg:#FDE7EF; --green:#9DD8B8; --green-bg:#EAF7EF;
+  --good:#4FB07C; --good-bg:#EAF7EF; --warn:#D9A440; --warn-bg:#FFF4DC; --bad:#D95C6E; --bad-bg:#FDE9EC;
+  --shadow:0 1px 2px rgba(58,42,51,.06),0 6px 20px rgba(58,42,51,.08);
+  --f-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Figtree",-apple-system,"Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;overscroll-behavior-y:none}
+button,a,.day,.quick button{touch-action:manipulation;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.num{font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;cursor:pointer}
+input,textarea,select{font:inherit;font-size:16px;color:var(--ink)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.app{max-width:520px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 calc(86px + env(safe-area-inset-bottom,0px))}
+
+/* fejléc */
+.pole{height:8px;margin:0 calc(-1*max(16px,env(safe-area-inset-left,0px)));background:repeating-linear-gradient(135deg,var(--pole) 0 10px,#fff 10px 20px,var(--accent) 20px 30px,#fff 30px 40px)}
+header.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding-block:16px 8px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:60px;height:60px;flex:none}
+header.top h1{font-family:var(--f-display);font-weight:700;font-size:30px;letter-spacing:.01em;margin:0;line-height:1;text-transform:none;font-size:34px}
+header.top .date{color:var(--muted);font-size:13px;margin-top:4px;text-transform:capitalize}
+.lvl{text-align:right;font-size:12px;color:var(--muted)}
+.lvl b{display:block;font-family:var(--f-display);font-size:20px;color:var(--ink);font-weight:600;letter-spacing:.02em}
+
+.view{display:flex;flex-direction:column;gap:14px;padding-top:6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+.label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+h2{font-family:var(--f-display);font-weight:600;font-size:22px;margin:0;letter-spacing:.01em;text-wrap:balance}
+
+/* napi kör */
+.hero{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:center}
+.ring{position:relative;width:150px;height:150px}
+.ring svg{width:150px;height:150px;transform:rotate(-90deg)}
+.ring .in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ring .big{font-family:var(--f-display);font-weight:700;font-size:30px;line-height:1}
+.ring .sub{font-size:11px;color:var(--muted);margin-top:3px}
+.hero .facts{display:flex;flex-direction:column;gap:10px;min-width:0}
+.fact{display:flex;justify-content:space-between;gap:8px;font-size:14px;border-bottom:1px dashed var(--line);padding-bottom:6px}
+.fact:last-child{border-bottom:0;padding-bottom:0}
+.fact span:first-child{color:var(--muted)}
+.fact b{font-weight:600}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:600;width:max-content}
+.chip.ok{background:var(--good-bg);color:var(--good)}
+.chip.warn{background:var(--warn-bg);color:var(--warn)}
+.chip.bad{background:var(--bad-bg);color:var(--bad)}
+.chip.neutral{background:var(--surface2);color:var(--muted)}
+.chip i{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+
+/* bevitel */
+.seg.three{grid-template-columns:1fr 1fr 1fr}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--surface2);border-radius:12px;padding:3px;gap:3px}
+.seg button{border:0;background:transparent;padding:9px;border-radius:9px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.amount{display:flex;align-items:baseline;gap:8px;border-bottom:2px solid var(--line);padding:10px 2px 6px;margin-top:12px}
+.amount:focus-within{border-color:var(--accent)}
+.amount input{border:0;background:transparent;font-family:var(--f-display);font-weight:600;font-size:40px;width:100%;min-width:0;outline:none;padding:0}
+.amount span{font-family:var(--f-display);font-size:22px;color:var(--muted)}
+.cats{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.cats button{border:1px solid var(--line);background:var(--surface);padding:7px 11px;border-radius:999px;font-size:13px}
+.cats button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.row{display:flex;gap:8px;margin-top:12px}
+.row input{flex:1;min-width:0;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 12px}
+.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:700;background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:var(--surface2);color:var(--ink)}
+.btn.block{width:100%}
+.btn:disabled{opacity:.45}
+
+/* listák */
+.list{display:flex;flex-direction:column}
+.item{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item .t{min-width:0}
+.item .t b{font-weight:600;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .t small{color:var(--muted);font-size:12px}
+.item .a{font-weight:700}
+.item .a.in{color:var(--good)}
+.item .x{border:0;background:transparent;color:var(--muted);font-size:18px;padding:4px 6px;border-radius:8px}
+.empty{color:var(--muted);font-size:14px;padding:6px 0}
+
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px}
+.stat .v{font-family:var(--f-display);font-size:26px;font-weight:700;line-height:1.05;margin-top:4px}
+.stat .s{font-size:11px;color:var(--muted)}
+
+.banner{border-radius:14px;padding:12px 14px;font-size:14px;display:flex;gap:10px;align-items:flex-start}
+.banner.warn{background:var(--warn-bg);color:var(--ink)}
+.banner.warn b{color:var(--warn)}
+.banner button{margin-left:auto;flex:none}
+
+/* naptár */
+.calhead{display:flex;align-items:center;justify-content:space-between}
+.calhead button{border:1px solid var(--line);background:var(--surface);border-radius:10px;width:38px;height:38px;font-size:18px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:12px}
+.cal .dow{font-size:11px;color:var(--muted);text-align:center;font-weight:600}
+.day{aspect-ratio:1/1.1;max-width:100%;border-radius:10px;border:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;padding:2px}
+.day small{font-size:9px;color:var(--muted);margin-top:1px}
+.day.ok{background:var(--good-bg);border-color:transparent;color:var(--good)}
+.day.bad{background:var(--bad-bg);border-color:transparent;color:var(--bad)}
+.day.today{outline:2px solid var(--accent);outline-offset:-2px}
+.day.blank{visibility:hidden}
+.day.sel{box-shadow:0 0 0 2px var(--ink) inset}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted);margin-top:10px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+/* havi */
+.bars{display:flex;flex-direction:column;gap:9px;margin-top:10px}
+.bar{display:grid;grid-template-columns:110px 1fr auto;gap:10px;align-items:center;font-size:13px}
+.bar .track{height:10px;background:var(--surface2);border-radius:6px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);border-radius:6px}
+.chart{overflow-x:auto;margin-top:10px}
+.chart svg{display:block}
+
+/* beállítás */
+.field{display:grid;grid-template-columns:1fr 130px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.field:last-child{border-bottom:0}
+.field label{font-size:14px;min-width:0}
+.field label small{display:block;color:var(--muted);font-size:12px}
+.field input{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 10px;text-align:right}
+textarea{width:100%;min-height:90px;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px;font-size:13px}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0}
+.toggle input{width:22px;height:22px}
+.muted{color:var(--muted);font-size:13px}
+
+/* fülsáv */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px))}
+nav.tabs .in{max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(7,1fr)}
+nav.tabs button{border:0;background:transparent;padding:9px 4px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:600;color:var(--muted)}
+nav.tabs button svg{width:22px;height:22px}
+nav.tabs button[aria-current="page"]{color:#C9517F}
+
+/* ítélet ablak */
+.modal{position:fixed;left:0;right:0;top:var(--vvt,0px);height:var(--vvh,100%);z-index:20;display:flex;align-items:flex-end;justify-content:center;background:rgba(43,42,51,.45);padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.sheet{width:100%;max-width:480px;border-radius:22px;padding:22px 20px 18px;background:var(--surface);border:1px solid var(--line);animation:up .28s ease-out}
+.sheet.bad{background:var(--bad-bg);border-color:var(--bad)}
+.sheet.ok{background:var(--good-bg);border-color:var(--good)}
+.sheet .kicker{font-family:var(--f-display);font-weight:700;font-size:15px;letter-spacing:.12em;text-transform:uppercase}
+.sheet.bad .kicker{color:var(--bad)} .sheet.ok .kicker{color:var(--good)}
+.sheet h3{font-family:var(--f-display);font-size:34px;line-height:1.02;margin:6px 0 10px;text-wrap:balance}
+.sheet p{margin:0 0 8px}
+.sheet .pts{font-family:var(--f-display);font-size:22px;font-weight:700;margin:10px 0 14px}
+.sheet.bad .btn{background:var(--bad);color:#fff}
+.sheet.ok .btn{background:var(--good);color:#fff}
+@keyframes up{from{transform:translateY(30px);opacity:.4}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.sheet{animation:none}}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:#fff;padding:9px 14px;border-radius:999px;font-size:13px;z-index:15}
+@media (max-width:380px){.bar{grid-template-columns:90px 1fr auto}}
+
+/* ---- egyértelmű Ma nézet ---- */
+body{font-size:16px}
+.status{border-radius:20px;padding:20px 18px 18px;border:2px solid var(--line);background:var(--surface)}
+.status.ok{background:var(--good-bg);border-color:var(--good)}
+.status.warn{background:var(--warn-bg);border-color:var(--warn)}
+.status.bad{background:var(--bad-bg);border-color:var(--bad)}
+.st-label{font-size:16px;font-weight:600}
+.st-big{font-family:var(--f-display);font-weight:700;font-size:58px;line-height:1;margin:6px 0 14px}
+.status.ok .st-big{color:var(--good)}.status.warn .st-big{color:var(--warn)}.status.bad .st-big{color:var(--bad)}
+.progress{height:14px;border-radius:8px;background:var(--surface);overflow:hidden;border:1px solid var(--line)}
+.progress>div{height:100%;width:0;border-radius:8px;background:var(--good);transition:width .3s}
+.status.warn .progress>div{background:var(--warn)}.status.bad .progress>div{background:var(--bad)}
+.st-row{display:flex;justify-content:space-between;gap:8px;font-size:14px;color:var(--muted);margin-top:8px}
+.st-msg{margin-top:12px;font-size:17px;font-weight:700}
+.st-pen{margin-top:4px;font-size:14px;color:var(--muted)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.act{border:0;border-radius:16px;padding:18px 10px;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
+.act b{font-size:26px;line-height:1;font-weight:700}
+.act.out{background:var(--accent);color:var(--accent-ink)}
+.act.in{background:var(--green-bg);color:#2E7D52;border:2px solid var(--green)}
+.rw-top{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-bottom:10px}
+.rw-name{font-family:var(--f-display);font-weight:700;font-size:28px;line-height:1.05}
+.rw-pts{font-family:var(--f-display);font-weight:600;font-size:22px}
+.progress.thin{height:10px;background:var(--surface2);border:0}
+.progress.thin>div{background:var(--accent)}
+.rw-next{font-size:14px;color:var(--muted);margin-top:6px}
+.rw-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.rw-grid div{background:var(--surface2);border-radius:12px;padding:10px 12px}
+.rw-grid span{display:block;font-family:var(--f-display);font-weight:700;font-size:24px}
+.rw-grid small{font-size:13px;color:var(--muted)}
+.closebox{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.closebox .muted{text-align:center}
+.entry .sheet{max-height:calc(100% - 20px);overflow-y:auto}
+.sheet-head{display:flex;justify-content:space-between;align-items:center}
+.entry .sheet h3{font-size:28px;margin:0}
+.sheet-head .x{border:0;background:var(--surface2);border-radius:50%;width:36px;height:36px;font-size:20px}
+.catgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+.catgrid button{min-width:0;overflow-wrap:anywhere}
+.catgrid button{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px 6px;font-size:14px;font-weight:600;min-height:52px}
+.catgrid button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.entry .label{margin-top:16px;font-size:12px}
+.note{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px;margin-top:14px}
+.btn.big{padding:16px;font-size:17px;margin-top:14px}
+.item .a{font-size:16px}
+.item .a.out{color:var(--bad)}
+/* ---- UI v2: animációk, gyors gombok ---- */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(1)}35%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-6px)}40%,60%{transform:translateX(6px)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes bounce{0%{transform:scale(1)}40%{transform:scale(1.3) translateY(-2px)}100%{transform:scale(1.15)}}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(93,191,132,0)}50%{box-shadow:0 0 0 8px rgba(93,191,132,.25)}}
+.view{animation:fadeUp .3s ease-out}
+.st-big{display:inline-block;transform-origin:left center}
+.st-big.pop{animation:pop .45s ease-out}
+.progress>div{transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.status{transition:background .4s,border-color .4s}
+.sheet.bad{animation:up .28s ease-out,shake .6s .25s}
+.item.new{animation:slideIn .35s ease-out}
+.toast{animation:toastIn .25s ease-out}
+.btn,.act,.quick button,.catgrid button,.g-btns button,nav.tabs button,.x{transition:transform .12s ease,opacity .12s}
+.btn:active,.act:active,.quick button:active,.catgrid button:active,.g-btns button:active{transform:scale(.95)}
+nav.tabs button svg{transition:transform .25s cubic-bezier(.3,1.5,.5,1)}
+nav.tabs button[aria-current="page"] svg{animation:bounce .35s ease-out forwards}
+.st-close{margin-top:14px;padding:16px;font-size:17px}
+.status.ok .st-close{background:var(--good);color:#fff;animation:glow 2.4s ease-in-out infinite}
+.status.warn .st-close{background:var(--warn);color:#fff}
+.st-close:disabled{animation:none;opacity:.5}
+.st-hint{text-align:center;font-size:13px;margin-top:8px}
+.quickrow{display:flex;flex-direction:column;gap:8px}
+.quickrow .label{padding-left:2px}
+.quickrow .quick{margin-top:0}
+.quick button{padding:11px 16px;font-size:15px}
+.quick button.hot{background:var(--pink-bg);border-color:var(--pink)}
+.amtquick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
+.amtquick button{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px 4px;font-weight:700;font-size:15px;min-width:0}
+.amtquick button:active{transform:scale(.95)}
+.entry-hint{font-size:13px;color:var(--muted);margin-top:10px;text-align:center}
+/* küldik */
+.q{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+.q:last-child{border-bottom:0}
+.q .ck{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:transparent;transition:background .3s,border-color .3s}
+.q.done .ck{background:var(--good);border-color:var(--good);color:#fff;animation:pop .5s}
+.q .n{font-weight:600;min-width:0}
+.q.done .n{color:var(--muted);text-decoration:line-through}
+.q .p{font-size:12px;color:var(--muted);margin-top:2px}
+.q .r{font-family:var(--f-display);font-weight:700;font-size:20px;color:var(--good)}
+.q.done .r{opacity:.5}
+.qfirst{background:var(--warn-bg);border-radius:12px;padding:10px 12px;font-size:14px;margin-top:10px;display:flex;gap:10px;align-items:center}
+.qfirst b{color:var(--warn)}
+.qfirst button{margin-left:auto;flex:none;padding:8px 12px;font-size:13px}
+.qseg{margin:12px 0 4px}
+/* vitaminok */
+.vit{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;width:100%;border:2px solid var(--line);background:var(--surface);border-radius:14px;padding:14px;font-size:17px;font-weight:600;margin-top:8px;text-align:left}
+.vit .ck{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;color:transparent;font-weight:700;transition:background .3s,border-color .3s}
+.vit.on{background:var(--green-bg);border-color:var(--green)}
+.vit.on .ck{background:var(--good);border-color:var(--good);color:#fff;animation:pop .4s}
+.vit small{color:var(--muted);font-weight:400;font-size:13px}
+.vweek{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+.vd{text-align:center;font-size:11px;color:var(--muted)}
+.vd i{display:block;height:36px;border-radius:10px;background:var(--surface2);margin-bottom:4px;border:1px solid var(--line)}
+.vd i.part{background:var(--warn-bg);border-color:var(--warn)}
+.vd i.full{background:var(--good);border-color:var(--good)}
+.vd.today b{color:var(--ink)}
+.lgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lgrid button{border:1px solid var(--pink);background:var(--pink-bg);border-radius:14px;padding:14px 8px;font-weight:700;font-size:15px;color:#9E3D62;min-width:0}
+.addfix{display:grid;grid-template-columns:1fr 110px auto;gap:8px;margin-top:10px}
+.addfix input{min-width:0;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px}
+.wrow{display:grid;grid-template-columns:1fr 130px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.wrow:last-child{border-bottom:0}
+.wrow label{font-size:14px}.wrow label small{display:block;color:var(--muted);font-size:12px}
+.wrow input{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 10px;text-align:right}
+.whist{display:grid;grid-template-columns:1fr auto auto;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px;align-items:center}
+.whist:last-child{border-bottom:0}
+.whist .d{color:var(--muted);font-size:12px}
+.whist .pos{color:var(--good)}.whist .neg{color:var(--bad)}
+/* nagybevásárlás */
+.shop-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.shop-row:last-child{border-bottom:0}
+.shop-row small{display:block;color:var(--muted);font-size:12px}
+.shop-row .sv{font-family:var(--f-display);font-weight:700;font-size:18px;text-align:right}
+.shop-row .sv.pos{color:var(--good)}.shop-row .sv.neg{color:var(--bad)}
+.howto{display:grid;grid-template-columns:28px 1fr;gap:10px;font-size:14px;margin-top:10px}
+.howto>b{font-family:var(--f-display);font-size:22px;color:var(--accent);line-height:1}
+
+/* ---- Halloween-mód (okt. 31 – nov. 1, vagy kézzel) ---- */
+.hw{--surface2:#F3EEF9;--line:#E3D9F0;--accent:#B98BE0;--pink:#D9BDF0;--pink-bg:#F6EFFC}
+.hw .logo{display:none}.hw .hwlogo{display:block;animation:hwfloat 3s ease-in-out infinite}
+@keyframes hwfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.hwlogo{display:none;width:60px;height:60px;flex:none}
+#boo{position:fixed;inset:0;z-index:60;background:#07040C;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;animation:booout .5s 1.4s forwards}
+#boo b{font-family:var(--f-display);font-weight:700;font-size:min(14vw,80px);color:#F57C1F;letter-spacing:.02em;white-space:nowrap;text-shadow:0 0 30px rgba(245,124,31,.8);animation:booin .9s cubic-bezier(.2,1.6,.4,1) both,shake .5s .25s}
+#boo span{color:#C9A7E8;font-size:15px;letter-spacing:.2em;text-transform:uppercase;animation:booin .7s .3s both}
+@keyframes booin{from{opacity:0;transform:scale(.2) rotate(-8deg)}to{opacity:1;transform:none}}
+@keyframes booout{to{opacity:0;visibility:hidden}}
+.bats{position:fixed;inset:0;pointer-events:none;z-index:55;overflow:hidden}
+.bat{position:absolute;left:-12%;width:38px;height:22px;color:#111;animation:fly var(--d) linear var(--dl) forwards}
+.hw .bat{color:#1a1026}
+.bat svg{width:100%;height:100%;display:block;animation:flap .22s steps(2) infinite}
+.bat.rev{left:auto;right:-12%;animation-name:flyrev;transform:scaleX(-1)}
+@keyframes fly{0%{transform:translate(0,0)}25%{transform:translate(28vw,-18px)}50%{transform:translate(56vw,10px)}75%{transform:translate(84vw,-14px)}100%{transform:translate(125vw,0)}}
+@keyframes flyrev{0%{transform:translate(0,0) scaleX(-1)}25%{transform:translate(-28vw,-18px) scaleX(-1)}50%{transform:translate(-56vw,10px) scaleX(-1)}75%{transform:translate(-84vw,-14px) scaleX(-1)}100%{transform:translate(-125vw,0) scaleX(-1)}}
+@keyframes flap{from{transform:scaleY(1)}to{transform:scaleY(.45)}}
+.hwseg{margin-top:10px}
+@media (prefers-reduced-motion:reduce){.hw .hwlogo,.hwlogo,#boo b,#boo span,.bat,.bat svg{animation:none}}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:40}
+.crown{font-size:44px;line-height:1;margin-bottom:6px;display:inline-block;animation:pop .6s ease-out}
+.sheet.ok h3.big{font-size:30px}
+@media (prefers-reduced-motion:reduce){.view,.st-big.pop,.sheet.bad,.item.new,.toast,nav.tabs button svg,.status.ok .st-close,.crown{animation:none}.progress>div{transition:none}}
+/* fű fül */
+.wfacts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.wfacts div{background:var(--surface2);border-radius:12px;padding:10px 12px}
+.wfacts span{display:block;font-family:var(--f-display);font-weight:700;font-size:22px}
+.wfacts small{font-size:13px;color:var(--muted)}
+.quick{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.quick button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:9px 14px;font-weight:600}
+.chk{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:15px}
+.chk input{width:22px;height:22px}
+nav.tabs button{font-size:9.5px;padding-inline:1px;letter-spacing:-.01em}
+/* célok */
+.goal{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+.goal.done{border-color:var(--good);background:var(--good-bg)}
+.g-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.g-name{font-family:var(--f-display);font-weight:700;font-size:24px;line-height:1.1;min-width:0;overflow-wrap:anywhere}
+.g-amt{display:flex;justify-content:space-between;gap:8px;margin:10px 0 6px;font-size:15px}
+.g-amt b{font-family:var(--f-display);font-size:22px}
+.g-need{font-size:14px;color:var(--muted);margin-top:8px}
+.g-need b{color:var(--ink)}
+.g-btns{display:flex;gap:8px;margin-top:12px}
+.g-btns button{flex:1;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:10px 4px;font-weight:600;font-size:13px;white-space:nowrap}
+.g-btns .pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.g-btns .danger{color:var(--bad)}
+.ghead{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:6px}
+.ghead .muted{font-size:13px}
+.gform label.lb{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-top:16px;margin-bottom:6px}
+.gform input[type=text],.gform input[type=date],.gform input.gnum{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px}
+.gform .seg{margin-top:14px}
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="brand"><svg class="logo" viewBox="0 0 512 512" aria-hidden="true"><ellipse cx="256" cy="300" rx="170" ry="120" fill="#F4A6C3" stroke="#E2679A" stroke-width="8"/><circle cx="120" cy="280" r="58" fill="#F4A6C3" stroke="#E2679A" stroke-width="8"/><ellipse cx="84" cy="284" rx="30" ry="26" fill="#E2679A"/><circle cx="76" cy="278" r="6" fill="#B23C6E"/><circle cx="94" cy="290" r="6" fill="#B23C6E"/><circle cx="138" cy="256" r="9" fill="#3A2A33"/><path d="M136 228 L120 196 L162 212 Z" fill="#E2679A"/><rect x="150" y="390" width="40" height="44" rx="12" fill="#E2679A"/><rect x="310" y="390" width="40" height="44" rx="12" fill="#E2679A"/><path d="M424 290 q30 -20 20 -50" stroke="#E2679A" stroke-width="10" fill="none" stroke-linecap="round"/><rect x="226" y="176" width="90" height="16" rx="8" fill="#B23C6E"/><g transform="translate(272 132) rotate(-18)"><circle r="44" fill="#F7C948" stroke="#D9A011" stroke-width="6"/><text x="0" y="16" text-anchor="middle" font-family="var(--f-display)" font-weight="700" font-size="46" fill="#8A5A00">Ft</text></g></svg><div><h1>zsuKe$$</h1><div class="date" id="hdrDate"></div></div></div>
+  </header>
+
+  <main>
+    <!-- MA -->
+    <section class="view" id="v-ma">
+      <div id="setupBanner"></div>
+      <div class="status" id="status">
+        <div class="st-label" id="stLabel">Ma még ennyit költhetsz:</div>
+        <div class="st-big num" id="stBig">0 Ft</div>
+        <div class="progress" aria-hidden="true"><div id="stBar"></div></div>
+        <div class="st-row num"><span id="stSpent"></span><span id="stLimit"></span></div>
+        <div class="st-msg" id="stMsg"></div>
+        <div class="st-pen" id="penaltyNote" hidden></div>
+        <button class="btn block st-close" id="closeDay" type="button">Nap lezárása</button>
+        <div class="muted st-hint" id="closeHint">Este nyomd meg. Ha a kereten belül maradtál, jön a dicséret.</div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="act out" id="openOut"><b>−</b>Kiadás</button>
+        <button type="button" class="act in" id="openIn"><b>+</b>Bevétel</button>
+      </div>
+      <div class="quickrow"><span class="label">Gyors kiadás – egy koppintás</span><div class="quick" id="quickOut"></div></div>
+
+      <div class="card">
+        <h2>Mai tételek</h2>
+        <div class="list" id="todayList"></div>
+      </div>
+
+      <div class="card">
+        <div class="rw-top"><div><div class="label">Küldetések</div><div class="rw-name" id="qTitle">Mai küldetések</div></div><div class="rw-pts num" id="qPts"></div></div>
+        <div id="qFirst"></div>
+        <div class="seg three qseg" role="group" aria-label="Küldi típus"><button type="button" data-qp="daily" aria-pressed="true">Napi</button><button type="button" data-qp="weekly" aria-pressed="false">Heti</button><button type="button" data-qp="monthly" aria-pressed="false">Havi</button></div>
+        <div id="qList"></div>
+      </div>
+
+      <div class="card">
+        <div class="rw-top"><div><div class="label">Spóroló szint</div><div class="rw-name" id="rwName">Inas</div></div><div class="rw-pts num" id="rwPts">0 pont</div></div>
+        <div class="progress thin" aria-hidden="true"><div id="rwBar"></div></div>
+        <div class="rw-next" id="rwNext"></div>
+        <div class="rw-grid">
+          <div><span class="num" id="sStreak">0 nap</span><small>napos sorozat a kereten belül</small></div>
+          <div><span class="num" id="sFund">0 Ft</span><small>bónusz pénz, nyugodtan elkölthető</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LÉLEKCSIHOLÓ -->
+    <section class="view" id="v-lelek" hidden>
+      <div class="status" id="lStatus">
+        <div class="st-label">Ma ennyi mehet hiábavalóságra, hogy a keret kitartson a hónap végéig:</div>
+        <div class="st-big num" id="lBig">0 Ft</div>
+        <div class="progress" aria-hidden="true"><div id="lBar"></div></div>
+        <div class="st-row num"><span id="lToday"></span><span id="lDays"></span></div>
+        <div class="st-msg" id="lMsg"></div>
+        <div class="st-pen" id="lSub"></div>
+      </div>
+      <div class="card">
+        <h2>Hiábavalóságok – mi csiholta ma a lelked?</h2>
+        <p class="muted" style="margin:4px 0 10px">Ruha, nasi, kacatok, bolondságok. Egy koppintás, beírod az összeget, és kész.</p>
+        <div class="lgrid" id="lQuick"></div>
+      </div>
+      <div class="card">
+        <h2>Ebben a hónapban</h2>
+        <div class="bars" id="lCats"></div>
+      </div>
+      <div class="card">
+        <h2>Ma ez csiholt</h2>
+        <div class="list" id="lList"></div>
+      </div>
+    </section>
+
+    <!-- VAGYON -->
+    <section class="view" id="v-vagyon" hidden>
+      <div class="status ok" id="wStatus">
+        <div class="st-label">Összes vagyon most:</div>
+        <div class="st-big num" id="wTotal">0 Ft</div>
+        <div class="st-row num"><span id="wPrev"></span><span id="wDelta"></span></div>
+        <div class="st-msg" id="wMsg"></div>
+        <button class="btn block st-close" id="wSnap" type="button">Havi összesítés rögzítése</button>
+        <div class="muted st-hint">A hónap végén nyomd meg: elmenti a mostani állást, és látod, hogyan változik hónapról hónapra.</div>
+      </div>
+      <div class="card">
+        <h2>Számlák és készpénz</h2>
+        <p class="muted" style="margin:4px 0 6px">Írd be az aktuális egyenlegeket. Bármikor átírhatod.</p>
+        <div id="wAcc"></div>
+        <div class="wrow"><label for="wEur">Euró<small>összeg euróban</small></label><input id="wEur" inputmode="numeric" placeholder="0"></div>
+        <div class="wrow"><label for="wRate">Euró árfolyam<small>Ft / €</small></label><input id="wRate" inputmode="numeric" placeholder="400"></div>
+        <div class="wrow"><label><b>Euró forintban</b></label><b class="num" id="wEurFt" style="text-align:right"></b></div>
+      </div>
+      <div class="card">
+        <h2>Havi összesítések</h2>
+        <div id="wHist"></div>
+      </div>
+    </section>
+
+    <!-- NAGYBEVÁSÁRLÁS -->
+    <section class="view" id="v-bolt" hidden>
+      <div class="status" id="bStatus">
+        <div class="st-label" id="bLabel">Heti nagybevásárlás</div>
+        <div class="st-big num" id="bBig">–</div>
+        <div class="st-msg" id="bMsg"></div>
+        <div class="st-pen" id="bSub"></div>
+        <button class="btn block st-close" id="bAddBtn" type="button">+ Nagybevásárlás beírása</button>
+      </div>
+      <div class="stats3">
+        <div class="stat"><div class="label">Bolti napok</div><div class="v num" id="bDays">0</div><div class="s">ezen a héten, cél: max 2</div></div>
+        <div class="stat"><div class="label">E heti spórolás</div><div class="v num" id="bSaveWeek">0</div><div class="s">Ft a 7 napi kerethoz képest</div></div>
+        <div class="stat"><div class="label">Összesen</div><div class="v num" id="bSaveAll">0</div><div class="s">Ft megtartva nagybev-hetekben</div></div>
+      </div>
+      <div class="card">
+        <h2>Hogy működik?</h2>
+        <div class="howto"><b>1</b><div>Hetente egyszer bevásárolsz nagyban, és itt beírod. <b>Az a nap nem megy mínuszba.</b></div></div>
+        <div class="howto"><b>2</b><div>Az összeget az app 7 napra elosztja: a napi keret ennyivel kisebb lesz, de a kaja már otthon van, úgyhogy nem is kell annyi.</div></div>
+        <div class="howto"><b>3</b><div>Minél kevesebbszer mész boltba, annál több pénz marad a céljaidra. Itt látod, mennyit tartottál meg ahhoz képest, mintha minden nap elszórnád a kerett.</div></div>
+      </div>
+      <div class="card">
+        <h2>Eddigi nagybevásárlások</h2>
+        <div id="bList"></div>
+      </div>
+    </section>
+
+    <!-- CÉLOK -->
+    <section class="view" id="v-celok" hidden>
+      <div class="card">
+        <div class="label">Célokra félretett pénz</div>
+        <div class="rw-name num" id="gTotal" style="margin-top:4px">0 Ft</div>
+        <div class="g-need" id="gMonthly"></div>
+      </div>
+      <button type="button" class="act out" id="gNewBtn"><b>+</b>Új cél</button>
+      <div class="ghead"><h2>Rövid távú célok</h2><span class="muted">pár héttől néhány hónapig</span></div>
+      <div class="view" id="gShort" style="padding:0"></div>
+      <div class="ghead"><h2>Hosszú távú célok</h2><span class="muted">fél évtől évekig</span></div>
+      <div class="view" id="gLong" style="padding:0"></div>
+    </section>
+
+    <!-- NAPLÓ -->
+    <section class="view" id="v-naplo" hidden>
+      <div class="seg" role="group" aria-label="Nézet"><button type="button" id="napCalBtn" aria-pressed="true">Naptár</button><button type="button" id="napMonBtn" aria-pressed="false">Havi összesítés</button></div>
+      <div class="view" id="napCal" style="padding:0">
+      <div class="card">
+        <div class="calhead"><button type="button" id="calPrev" aria-label="Előző hónap">‹</button><h2 id="calTitle"></h2><button type="button" id="calNext" aria-label="Következő hónap">›</button></div>
+        <div class="cal" id="cal"></div>
+        <div class="legend"><span><i style="background:var(--good-bg);border:1px solid var(--good)"></i>Plafon alatt</span><span><i style="background:var(--bad-bg);border:1px solid var(--bad)"></i>Elszállt a lé</span><span><i style="background:var(--surface);border:1px solid var(--line)"></i>Nem vezetted</span></div>
+      </div>
+      <div class="card">
+        <h2 id="dayTitle">Bökj rá egy napra</h2>
+        <div id="dayVerdict" style="margin-top:8px"></div>
+        <div class="list" id="dayList"></div>
+      </div>
+      </div>
+      <div class="view" id="napMon" style="padding:0" hidden>
+      <div class="calhead"><button type="button" id="mPrev" aria-label="Előző hónap" class="card" style="padding:0;width:38px;height:38px">‹</button><h2 id="mTitle"></h2><button type="button" id="mNext" aria-label="Következő hónap" class="card" style="padding:0;width:38px;height:38px">›</button></div>
+      <div class="stats3">
+        <div class="stat"><div class="label">Bevétel</div><div class="v num" id="mIn">0</div><div class="s">Ft</div></div>
+        <div class="stat"><div class="label">Kiadás</div><div class="v num" id="mOut">0</div><div class="s">fix + napi, Ft</div></div>
+        <div class="stat"><div class="label">Maradék</div><div class="v num" id="mRest">0</div><div class="s">Ft</div></div>
+      </div>
+      <div class="card">
+        <h2>Napi bevétel</h2>
+        <div class="muted" id="mInSub"></div>
+        <div class="chart" id="mChart"></div>
+      </div>
+      <div class="card">
+        <h2>Bevétel számlánként</h2>
+        <div class="muted">Hova érkezett a pénz ebben a hónapban</div>
+        <div class="bars" id="mAccts"></div>
+      </div>
+      <div class="card">
+        <h2>Hova ment a pénz?</h2>
+        <div class="muted">Napi kiadások + a havi fix kiadások</div>
+        <div class="bars" id="mCats"></div>
+      </div>
+      </div>
+    </section>
+
+    <!-- BEÁLLÍTÁS -->
+    <section class="view" id="v-beall" hidden>
+      <div class="card">
+        <h2>Napi keret</h2>
+        <p class="muted" style="margin:4px 0 8px">Ennyit költhetsz naponta szabadon. Számolás: várható havi bevétel − fix kiadások − megtakarítás, osztva 30-cal.</p>
+        <div class="field"><label for="incExp">Várható havi bevétel<small id="incHint"></small></label><input id="incExp" inputmode="numeric"></div>
+        <div class="field"><label for="saveGoal">Havi megtakarítás<small>ezt félreteszed</small></label><input id="saveGoal" inputmode="numeric"></div>
+        <div class="field"><label>Javasolt napi keret<small>a fentiekből számolva</small></label><b class="num" id="sugLimit" style="text-align:right"></b></div>
+        <div class="field"><label for="manLimit">Saját napi keret<small>üresen hagyva a javasolt él</small></label><input id="manLimit" inputmode="numeric" placeholder="automata"></div>
+        <div class="toggle"><label for="carry">Túllépés után másnap kisebb a keret<br><small class="muted">Amennyivel túlmentél, annyit levon a másnapi keretből (legfeljebb a felét)</small></label><input type="checkbox" id="carry"></div>
+      </div>
+      <div class="card">
+        <h2>Havi fix kiadások</h2>
+        <p class="muted" style="margin:4px 0 8px">Ezeket nem kell naponta beírni, a napi keretből magától lejönnek. Lent saját sort is adhatsz hozzá.</p>
+        <div id="fixedList"></div>
+        <div class="addfix"><input id="nfName" placeholder="Saját sor neve" maxlength="40"><input id="nfAmt" inputmode="numeric" placeholder="Ft / hó"><button class="btn" type="button" id="nfAdd">+</button></div>
+        <div class="field"><label><b>Összesen</b></label><b class="num" id="fixedSum" style="text-align:right"></b></div>
+      </div>
+      <div class="card">
+        <h2>Mentés, ha cserélsz telefont</h2>
+        <p class="muted" style="margin:4px 0 10px">Minden adat csak ezen a telefonon van. Néha másold ki a mentést (pl. a Jegyzetekbe), hogy ne vesszen el.</p>
+        <div class="row" style="margin-top:0"><button class="btn ghost" type="button" id="copyBk" style="flex:1">Mentés másolása</button><button class="btn ghost" type="button" id="showImp" style="flex:1">Visszatöltés</button></div>
+        <div id="impBox" hidden style="margin-top:10px"><textarea id="impText" placeholder="Illeszd be ide a mentést"></textarea><button class="btn block" type="button" id="doImp" style="margin-top:8px">Mentés betöltése</button></div>
+        <textarea id="bkText" hidden readonly style="margin-top:10px"></textarea>
+        <div id="storeWarn" class="muted" style="margin-top:8px"></div>
+      </div>
+      <div class="card">
+        <h2>Tiszta lap</h2>
+        <p class="muted" style="margin:4px 0 10px">Törli a beírt tételeket, a pontokat és a vagyon-naplót is.</p>
+        <button class="btn ghost block" type="button" id="resetBtn">Mindent törlök</button>
+        <button class="btn block" type="button" id="resetYes" hidden style="margin-top:8px;background:var(--bad);color:#fff">Igen, biztosan törlöm</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<nav class="tabs" aria-label="Fülek"><div class="in">
+  <button type="button" data-tab="ma" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>Ma</button>
+  <button type="button" data-tab="lelek"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>Lélek</button>
+  <button type="button" data-tab="vagyon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19h16M6 16V10M10 16V6M14 16v-4M18 16V8"/></svg>Vagyon</button>
+  <button type="button" data-tab="bolt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h2l2.4 11h11.2L21 7H6.2"/><circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/></svg>Bolt</button>
+  <button type="button" data-tab="celok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>Célok</button>
+  <button type="button" data-tab="naplo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Napló</button>
+  <button type="button" data-tab="beall"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>Beállítás</button>
+</div></nav>
+
+<div id="entry" class="modal entry" hidden>
+  <form class="sheet" id="addForm" autocomplete="off" role="dialog" aria-modal="true" aria-labelledby="entryTitle">
+    <div class="sheet-head"><h3 id="entryTitle">Új kiadás</h3><button type="button" class="x" id="entryClose" aria-label="Bezárás">×</button></div>
+    <div class="amount"><input id="amt" inputmode="numeric" enterkeyhint="done" placeholder="0" aria-label="Összeg forintban"><span>Ft</span></div>
+    <div class="amtquick" id="amtQuick"></div>
+    <div class="label" id="catLabel">Mire költötted?</div>
+    <div class="catgrid" id="cats"></div>
+    <div class="label" id="acctLabel" hidden>Hova érkezett?</div>
+    <div class="catgrid" id="accts" hidden></div>
+    <input id="note" class="note" placeholder="Megjegyzés, ha akarsz" maxlength="60">
+    <button class="btn block big" id="addBtn" type="submit">Mentés</button>
+    <div class="entry-hint">Zsé + mire ment, és magától menti.</div>
+  </form>
+</div>
+<div id="bSheet" class="modal entry" hidden>
+  <form class="sheet" id="bForm" autocomplete="off" role="dialog" aria-modal="true" aria-labelledby="bTitle">
+    <div class="sheet-head"><h3 id="bTitle">Heti nagybevásárlás</h3><button type="button" class="x" id="bClose" aria-label="Bezárás">×</button></div>
+    <div class="muted" style="margin-top:6px">Mennyit költöttél a boltban? Ez nem viszi mínuszba a mai napot.</div>
+    <div class="amount"><input id="bAmt" inputmode="numeric" enterkeyhint="done" placeholder="0" aria-label="Összeg forintban"><span>Ft</span></div>
+    <div class="amtquick" id="bQuick"></div>
+    <input id="bNote" class="note" placeholder="Hol? (pl. Lidl, Auchan) – nem kötelező" maxlength="40">
+    <div class="entry-hint" id="bHint"></div>
+    <button class="btn block big" id="bSave" type="submit">Mehet</button>
+  </form>
+</div>
+<div id="gSheet" class="modal entry" hidden>
+  <form class="sheet gform" id="gForm" autocomplete="off" role="dialog" aria-modal="true" aria-labelledby="gTitle">
+    <div class="sheet-head"><h3 id="gTitle">Új cél</h3><button type="button" class="x" id="gClose" aria-label="Bezárás">×</button></div>
+    <div class="seg" role="group" aria-label="Cél típusa"><button type="button" id="gTShort" aria-pressed="true">Rövid távú</button><button type="button" id="gTLong" aria-pressed="false">Hosszú távú</button></div>
+    <div class="quick" id="gTemplates"></div>
+    <label class="lb" for="gName">Mire gyűjtesz?</label><input type="text" id="gName" maxlength="40" placeholder="pl. Új hajvágógép">
+    <label class="lb" for="gTarget">Mennyi kell? (Ft)</label><input class="gnum" id="gTarget" inputmode="numeric" placeholder="0">
+    <label class="lb" for="gDate">Meddig?</label><input type="date" id="gDate">
+    <label class="lb" for="gStart">Ennyi már megvan (Ft, nem kötelező)</label><input class="gnum" id="gStart" inputmode="numeric" placeholder="0">
+    <button class="btn block big" id="gSave" type="submit">Mehet</button>
+  </form>
+</div>
+<div id="gDepSheet" class="modal entry" hidden>
+  <form class="sheet" id="gDepForm" autocomplete="off" role="dialog" aria-modal="true" aria-labelledby="gDepTitle">
+    <div class="sheet-head"><h3 id="gDepTitle">Befizetés</h3><button type="button" class="x" id="gDepClose" aria-label="Bezárás">×</button></div>
+    <div class="muted" id="gDepSub" style="margin-top:6px"></div>
+    <div class="amount"><input id="gDepAmt" inputmode="numeric" enterkeyhint="done" placeholder="0" aria-label="Összeg forintban"><span>Ft</span></div>
+    <div class="quick" id="gDepQuick"></div>
+    <button class="btn block big" id="gDepSave" type="submit">Mentés</button>
+  </form>
+</div>
+<div id="modal" class="modal" hidden></div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+(function(){
+"use strict";
+var KEY="zsuzsanna-kassza-v1";
+var AVG_COFFEE=9000; // egy masszázs
+var ALTEGIO=[];
+
+var OUT_CATS=[["sparkaja","Sparos kaja"],["sport","Sport"],["masszazs","Masszázs"],["szepseg","Szépségápolás"],["kepzes","Képzés, könyv"],["csalad","Családi hétvége"],["unokak","Unokák"],["ruha","Ruha, cipő"],["nasi","Nasi"],["kacat","Kacatok"],["faszsag","Bolondságok"],["kozl","Közlekedés"],["mas","Más"],["jutalom","Bónuszból"]];
+var IN_CATS=[["nyugdij","Nyugdíj"],["alberlet","Albérleti díj"],["kliens","Kliensek"],["csoport","Önismereti csoportok"],["gyokossy","Gyökössy Intézet"],["egyebin","Egyéb"]];
+var ACCTS=[["otp","OTP"],["otptart","OTP tartalék"],["revo","Revolut"],["kp","Készpénz"]];
+var FIXED_DEFAULT=[["lelek","Lélekcsiholó keret (hiábavalóságok)"],["berlet","Bérlet"],["tel","Telefonszámla"],["albi","Albérlet"],["iroda","Irodabérlet"],["coach","Coach"],["uzenetes","Napi üzenetes"],["mediklub","Mediklub"],["sportb","Sportbérlet"]];
+var CAT_NAME={nagybev:"Nagybevásárlás"};OUT_CATS.concat(IN_CATS).forEach(function(c){CAT_NAME[c[0]]=c[1]});
+
+var LEVELS=[[0,"Csóró"],[100,"Takarékos"],[300,"Spórolós"],[700,"Jómódú"],[1500,"Nagyasszony"],[3000,"Rózsadombi királynő"]];
+
+var MSG_BAD=[
+ "Ejnye, Zsuzsanna. Ez most nem jött össze.",
+ "Ma kicsit elszaladt a ló.",
+ "A pénztárca ma karcsúbb lett a kelleténél.",
+ "Nem a legjobb nap volt, de holnap új lap.",
+ "Hoppá, ez most túlment."
+];
+var MSG_OK=[
+ "Szép volt, Zsuzsanna!",
+ "Ez egy jó nap volt!",
+ "Rendben a kassza, respekt.",
+ "Így kell ezt csinálni.",
+ "Maximális respekt!"
+];
+
+/* ---------- tárolás ---------- */
+var storageOK=true;
+function load(){try{var s=localStorage.getItem(KEY);return s?JSON.parse(s):null}catch(e){storageOK=false;return null}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){storageOK=false}}
+
+function ymd(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function parseYmd(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2])}
+function addDays(s,n){var d=parseYmd(s);d.setDate(d.getDate()+n);return ymd(d)}
+function today(){return ymd(new Date())}
+function uid(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36)}
+
+function fresh(){
+  return {v:1,trackStart:today(),
+    settings:{incomeExpected:null,savingsGoal:0,manualLimit:null,carry:true,
+      fixed:FIXED_DEFAULT.map(function(f){return {id:f[0],name:f[1],amount:0}})},
+    entries:[],closed:{},ack:{},wealth:{acc:{},eur:0,rate:400,hist:[]}};
+}
+var S=load()||fresh();
+if(!S.closed)S.closed={};if(!S.ack)S.ack={};
+function ensureGoals(){if(!S.goals)S.goals=[];if(!S.vit)S.vit={};if(!S.settings.fixed.some(function(f){return f.id==="lelek"}))S.settings.fixed.unshift({id:"lelek",name:"Lélekcsiholó keret (hiábavalóságok)",amount:0})}ensureGoals();
+var HAPPY=["ruha","nasi","kacat","faszsag"];
+function isHappy(c){return HAPPY.indexOf(c)>=0}
+function lelekFixed(){var f=S.settings.fixed.filter(function(x){return x.id==="lelek"})[0];return f?(+f.amount||0):0}
+function happySpent(a,b){return S.entries.reduce(function(s,e){return s+(e.type==="out"&&isHappy(e.cat)&&e.date>=a&&e.date<=b?e.amount:0)},0)}
+
+/* ---------- számolás ---------- */
+var fmt=new Intl.NumberFormat("hu-HU");
+function ft(n){return fmt.format(Math.round(n))+" Ft"}
+function n0(n){return fmt.format(Math.round(n))}
+function k(n){var a=Math.abs(n);return (n<0?"−":"")+(a>=1e6?(a/1e6).toFixed(2).replace(".",",")+" M":a>=1e4?Math.round(a/1000)+" e":fmt.format(Math.round(a)))}
+
+function fixedSum(){return S.settings.fixed.reduce(function(a,f){return a+(+f.amount||0)},0)}
+function histIncomeMonthly(){
+  var end=today(),start=addDays(end,-60),sum=0;
+  S.entries.forEach(function(e){if(e.type==="in"&&e.date>=start&&e.date<end)sum+=e.amount});
+  return Math.round(sum/60*30.4/1000)*1000;
+}
+function expectedIncome(){return S.settings.incomeExpected!=null?S.settings.incomeExpected:histIncomeMonthly()}
+function suggestedLimit(){var v=(expectedIncome()-fixedSum()-(+S.settings.savingsGoal||0))/30.4;return Math.max(0,Math.floor(v/500)*500)}
+function baseLimit(){return S.settings.manualLimit!=null?S.settings.manualLimit:suggestedLimit()}
+
+var cache={};
+function resetCache(){cache={}}
+function dayData(d){
+  if(cache["d"+d])return cache["d"+d];
+  var spent=0,inc=0,fund=0,hasOut=false,items=[],big=0;
+  S.entries.forEach(function(e){if(e.date!==d)return;items.push(e);
+    if(e.type==="in")inc+=e.amount;else{hasOut=true;if(e.big){big+=e.amount}else if(e.cat==="jutalom")fund+=e.amount;else if(!(isHappy(e.cat)&&lelekFixed()>0))spent+=e.amount}});
+  return cache["d"+d]={spent:spent,income:inc,fundSpent:fund,hasOut:hasOut,items:items,big:big};
+}
+function bigShare(d){var s=0;S.entries.forEach(function(e){if(e.big&&e.date<=d&&d<addDays(e.date,7))s+=e.amount/7});return s}
+function dayLimitBase(d){return Math.max(0,baseLimit()-bigShare(d))}
+function limitFor(d){
+  if(cache["l"+d]!=null)return cache["l"+d];
+  var b=dayLimitBase(d),l=b;
+  if(S.settings.carry&&d>S.trackStart){var p=addDays(d,-1),pd=dayData(p),pl=limitFor(p);
+    if(evaluated(p)&&pd.spent>pl)l=b-Math.min(pd.spent-pl,b*0.5);}
+  return cache["l"+d]=Math.max(0,Math.round(l));
+}
+function evaluated(d){
+  if(d<S.trackStart)return false;
+  var t=today();if(d>t)return false;
+  var dd=dayData(d);
+  if(d===t)return !!S.closed[d]||dd.spent>limitFor(d);
+  return dd.hasOut||!!S.closed[d];
+}
+function verdict(d){if(!evaluated(d))return null;return dayData(d).spent>limitFor(d)?"bad":"ok"}
+
+function score(){
+  if(cache.score)return cache.score;
+  var pts=0,streak=0,best=0,saved=0,fund=0,log={},t=today();
+  for(var d=S.trackStart;d<=t;d=addDays(d,1)){
+    var v=verdict(d),dd=dayData(d),lim=limitFor(d),delta=0;
+    fund-=dd.fundSpent;
+    if(v==="ok"){streak++;var left=lim-dd.spent;saved+=left;fund+=Math.round(left*0.1);
+      delta=10+Math.floor(left/1000);
+      if(streak===3)delta+=15;if(streak===7)delta+=40;if(streak===14)delta+=80;if(streak===30)delta+=200;
+    }else if(v==="bad"){delta=-(15+Math.ceil((dd.spent-lim)/1000));streak=0;}
+    else if(d<t){streak=0}
+    pts=Math.max(0,pts+delta);best=Math.max(best,streak);log[d]={delta:delta,streak:streak};
+  }
+  (S.goals||[]).forEach(function(gl){if(gl.done)pts+=gl.type==="long"?150:50});
+  var mp=0,MS=S.missions||{};for(var mk in MS)mp+=MS[mk];pts+=mp;
+  return cache.score={pts:pts,streak:streak,best:best,saved:saved,fund:Math.max(0,fund),log:log};
+}
+function level(p){var l=LEVELS[0];LEVELS.forEach(function(x){if(p>=x[0])l=x});var i=LEVELS.indexOf(l),nx=LEVELS[i+1];return {name:l[1],next:nx}}
+
+/* ---------- UI segédek ---------- */
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function pick(a,seed){return a[Math.abs(seed)%a.length]}
+function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return h}
+function digits(v){var x=String(v).replace(/[^\d]/g,"");return x?parseInt(x,10):null}
+var toastT;
+function toast(m){var t=$("toast");t.textContent=m;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(function(){t.hidden=true},2200)}
+var HU_DATE=new Intl.DateTimeFormat("hu-HU",{month:"long",day:"numeric",weekday:"long"});
+var HU_MON=new Intl.DateTimeFormat("hu-HU",{year:"numeric",month:"long"});
+
+/* ---------- MA nézet ---------- */
+var type="out",cat="kaja";
+function renderCats(){
+  var list=type==="out"?OUT_CATS:IN_CATS;
+  if(!list.some(function(c){return c[0]===cat}))cat=list[0][0];
+  $("cats").innerHTML=list.map(function(c){return '<button type="button" data-c="'+c[0]+'" aria-pressed="'+(c[0]===cat)+'">'+esc(c[1])+'</button>'}).join("");
+}
+$("cats").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;cat=b.dataset.c;renderCats();if(type==="out"&&digits($("amt").value))submitEntry()});
+var QUICK_OUT=["sparkaja","nasi","unokak","kozl","mas"];
+var AMT_PRESETS={out:[1000,2000,5000,10000],"in":[5000,10000,20000,50000]};
+function renderQuick(){$("quickOut").innerHTML=QUICK_OUT.map(function(c){return '<button type="button" class="hot" data-qc="'+c+'">'+esc(CAT_NAME[c])+'</button>'}).join("")}
+$("quickOut").addEventListener("click",function(e){var b=e.target.closest("[data-qc]");if(b)openEntry("out",b.dataset.qc)});
+function submitEntry(){var f=$("addForm");if(f.requestSubmit)f.requestSubmit();else f.dispatchEvent(new Event("submit",{cancelable:true}))}
+$("amtQuick").addEventListener("click",function(e){var b=e.target.closest("[data-a]");if(!b)return;$("amt").value=n0(+b.dataset.a);if(cat&&type==="out")submitEntry();else{toast("Most nyomd meg, mire ment");}});
+var acct=null;
+function renderAccts(){$("accts").innerHTML=ACCTS.map(function(a){return '<button type="button" data-acct="'+a[0]+'" aria-pressed="'+(a[0]===acct)+'">'+a[1]+'</button>'}).join("")}
+$("accts").addEventListener("click",function(e){var b=e.target.closest("[data-acct]");if(!b)return;acct=b.dataset.acct;renderAccts()});
+function openEntry(t,presetCat){type=t;cat=presetCat||null;renderCats();acct=null;renderAccts();$("acctLabel").hidden=$("accts").hidden=(t!=="in");
+  $("amtQuick").innerHTML=AMT_PRESETS[t].map(function(a){return '<button type="button" data-a="'+a+'">'+n0(a)+'</button>'}).join("");
+  $("entryTitle").textContent=t==="out"?"Kiadás":"Bevétel";
+  $("catLabel").textContent=t==="out"?"Mire költötted?":"Honnan jött?";
+  $("addBtn").textContent=t==="out"?"Mehet":"Mehet";
+  $("amt").value="";$("note").value="";$("entry").hidden=false;setTimeout(function(){$("amt").focus()},50)}
+var RM=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+var lastBig=null;
+function animateBig(el,target){
+  if(RM||lastBig==null||Math.abs(target-lastBig)<1){el.textContent=ft(target);lastBig=target;return}
+  var from=lastBig,t0=performance.now(),dur=550;lastBig=target;
+  el.classList.remove("pop");void el.offsetWidth;el.classList.add("pop");
+  (function step(now){var k=Math.min(1,(now-t0)/dur);k=1-Math.pow(1-k,3);el.textContent=ft(from+(target-from)*k);if(k<1)requestAnimationFrame(step)})(t0);
+}
+function confetti(){if(RM)return;var c=document.createElement("canvas");c.className="confetti";document.body.appendChild(c);
+  var ctx=c.getContext("2d"),W=c.width=innerWidth,H=c.height=innerHeight,P=[],cols=hwOn()?["#C9A7E8","#F5A524","#FFFFFF","#F9B8CF","#B98BE0"]:["#F9B8CF","#A8E0BF","#F7C948","#E58AAB","#8FD4AC","#FBD0DE"];
+  for(var i=0;i<140;i++)P.push({x:Math.random()*W,y:-20-Math.random()*H*.6,r:5+Math.random()*5,vx:(Math.random()-.5)*2.4,vy:2.5+Math.random()*3.5,c:cols[i%cols.length],a:Math.random()*6.3,va:(Math.random()-.5)*.25});
+  var t0=performance.now();(function f(now){ctx.clearRect(0,0,W,H);P.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.a+=p.va;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a);ctx.fillStyle=p.c;ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.7);ctx.restore()});
+    if(now-t0<3400)requestAnimationFrame(f);else c.remove()})(t0)}
+function closeEntry(){$("entry").hidden=true}
+$("openOut").onclick=function(){openEntry("out")};
+$("openIn").onclick=function(){openEntry("in")};
+$("entryClose").onclick=closeEntry;
+$("entry").addEventListener("click",function(e){if(e.target===this)closeEntry()});
+$("amt").addEventListener("input",function(){var v=digits(this.value);this.value=v==null?"":n0(v)});
+
+function itemRow(e,del){
+  var sign=e.type==="in"?"+":"−";
+  var sub=CAT_NAME[e.cat]||e.cat;if(e.note)sub+=" · "+e.note;
+  return '<div class="item"><div class="t"><b>'+esc(CAT_NAME[e.cat]||e.cat)+'</b><small>'+esc(e.note||(e.type==="in"?"jött":"elment"))+'</small></div><div class="a num '+(e.type==="in"?"in":"out")+'">'+sign+n0(e.amount)+'</div>'+(del?'<button class="x" type="button" aria-label="Törlés" data-del="'+e.id+'">×</button>':'<span></span>')+'</div>';
+}
+
+var lastAdded=null;
+function renderToday(){
+  var t=today(),dd=dayData(t),lim=limitFor(t),left=lim-dd.spent,sc=score();
+  $("hdrDate").textContent=HU_DATE.format(new Date());
+  var ratio=lim>0?Math.min(1,dd.spent/lim):(dd.spent>0?1:0),over=dd.spent>lim,st=$("status");
+  var state=over?"bad":ratio>=.8?"warn":"ok";
+  st.className="status "+state;
+  $("stLabel").textContent=over?"Ennyivel lépted túl a mai keretet:":"Ma még ennyit költhetsz:";
+  animateBig($("stBig"),Math.abs(left));
+  $("stBar").style.width=(over?100:ratio*100).toFixed(1)+"%";
+  $("stSpent").textContent="Elköltve: "+ft(dd.spent);
+  $("stLimit").textContent="Napi keret: "+ft(lim);
+  $("stMsg").textContent=over?"Zsuzsus egy bádog. Túllépted a napi keretet, ma már ne költs, ha lehet.":
+    S.closed[t]?"Nap lezárva. Zsuzsanna, te vagy a legmenőbb nagymama a világon, maximális respekt!":
+    lim===0?"Még nincs napi keret. Nézz be a Beállításokba.":
+    ratio>=.8?"Fogy a keret, lassíts egy kicsit!":
+    dd.spent>0?"Rendben vagy, van még keret.":"Ma még nem költöttél semmit.";
+  var pn=$("penaltyNote");
+  var notes=[],bs=Math.round(bigShare(t));if(bs>0)notes.push("A heti nagybevásárlás miatt ma "+ft(bs)+"-tal kisebb a keret, de az étel már megvan.");
+  if(lim<dayLimitBase(t))notes.push("A tegnapi túllépés miatt ma "+ft(dayLimitBase(t)-lim)+"-tal kisebb a keret.");
+  if(dd.big>0)notes.push("Mai nagybevásárlás: "+ft(dd.big)+" – ez nem számít a napi keretbe.");
+  pn.hidden=!notes.length;pn.textContent=notes.join(" ");
+  var L=level(sc.pts),cur=LEVELS.filter(function(x){return x[1]===L.name})[0][0];
+  $("rwName").textContent=L.name;$("rwPts").textContent=n0(sc.pts)+" pont";
+  $("rwBar").style.width=(L.next?Math.min(100,(sc.pts-cur)/(L.next[0]-cur)*100):100).toFixed(1)+"%";
+  $("rwNext").textContent=L.next?"Még "+n0(L.next[0]-sc.pts)+" pont, és te leszel: "+L.next[1]:"Ennél feljebb nincs: Rózsadombi királynő vagy!";
+  $("sStreak").textContent=sc.streak+" nap";$("sFund").textContent=ft(sc.fund);
+  var items=dd.items.slice().reverse();
+  $("todayList").innerHTML=items.length?items.map(function(e,i){return itemRow(e,true).replace('class="item"',i===0&&e.id===lastAdded?'class="item new"':'class="item"')}).join(""):'<div class="empty">Ma még nincs tétel. Ha nem költöttél, este nyomd meg fent a „Nap lezárása” gombot.</div>';
+  $("closeDay").disabled=!!S.closed[t]||over;
+  $("closeDay").textContent=S.closed[t]?"Nap lezárva":over?"Ma nincs dicséret":"Nap lezárása";
+  $("closeHint").hidden=!!S.closed[t]||over;
+  var b=$("setupBanner");
+  if(expectedIncome()===0&&S.settings.manualLimit==null){b.innerHTML='<div class="banner warn"><div><b>Még nincs napi plafon.</b> Töltsd be a kezdő adatokat (Gépház → Visszatöltés), vagy írd be, mennyi lé jön havonta.</div><button class="btn" type="button" data-go="beall" style="padding:8px 12px;font-size:13px">Beállítom</button></div>'}else if(fixedSum()===0&&S.settings.manualLimit==null){b.innerHTML='<div class="banner warn"><div><b>Még nincsenek beírva a fix kiadások.</b> Addig a napi keret túl magas ('+ft(baseLimit())+'). Írd be az albérletet, az irodabérletet, a bérletet.</div><button class="btn" type="button" data-go="beall" style="padding:8px 12px;font-size:13px">Beállítom</button></div>'}else b.innerHTML="";
+}
+
+$("addForm").addEventListener("submit",function(e){
+  e.preventDefault();var a=digits($("amt").value);
+  if(!a){toast("Írd be, mennyi zsé");$("amt").focus();return}
+  if(!cat){toast(type==="out"?"Nyomd meg, mire ment el":"Nyomd meg, honnan jött");return}
+  closeEntry();
+  var t=today(),before=dayData(t).spent>limitFor(t);
+  lastAdded=uid();S.entries.push({id:lastAdded,date:t,type:type,amount:a,cat:cat,acct:type==="in"?acct:undefined,note:$("note").value.trim()});
+  if(type==="out"&&cat==="jutalom"&&a>score().fund+0){toast("Nincs ennyi a bónusz kasszában – sima kiadásként beírva");S.entries[S.entries.length-1].cat="mas"}
+  save();resetCache();$("amt").value="";$("note").value="";
+  var after=dayData(t).spent>limitFor(t);
+  renderAll();
+  if(!before&&after){S.ack[t]=true;save();showVerdict(t,true)}else toast(type==="out"?"Kiadás elkönyvelve":"Bevétel beírva");
+});
+document.addEventListener("click",function(e){
+  var d=e.target.closest("[data-del]");if(d){S.entries=S.entries.filter(function(x){return x.id!==d.dataset.del});save();resetCache();renderAll();toast("Kukázva");return}
+  var g=e.target.closest("[data-go]");if(g)go(g.dataset.go);
+});
+$("closeDay").onclick=function(){var t=today();S.closed[t]=true;S.ack[t]=true;save();resetCache();renderAll();showVerdict(t,true)};
+
+/* ---------- ítélet ---------- */
+function showVerdict(d,live){
+  var v=verdict(d);if(!v)return;
+  var dd=dayData(d),lim=limitFor(d),sc=score(),lg=sc.log[d]||{delta:0,streak:0},seed=hash(d);
+  var when=d===today()?"Ma":d===addDays(today(),-1)?"Tegnap":HU_DATE.format(parseYmd(d));
+  var m=$("modal"),html;
+  if(v==="bad"){
+    var over=dd.spent-lim,cuts=Math.max(1,Math.round(over/AVG_COFFEE));
+    html='<div class="sheet bad" role="dialog" aria-modal="true" aria-labelledby="vh"><div class="kicker">'+esc(pick(MSG_BAD,seed))+'</div><h3 id="vh" class="big">Zsuzsus egy bádog.</h3>'+
+      '<p>'+when+' '+ft(over)+'-tal lépted túl a napi keretet ('+ft(lim)+').</p>'+
+      '<p>Ez kb. <b>'+cuts+' masszázs</b> ára. A sorozatod újraindul.</p>'+
+      (S.settings.carry?'<p>Holnap '+ft(Math.min(over,baseLimit()*0.5))+'-tal kisebb a keret.</p>':'')+
+      '<div class="pts num">'+lg.delta+' pont</div><button class="btn block" type="button" id="vOk">Rendben, holnap jobban figyelek</button></div>';
+  }else{
+    var left=lim-dd.spent,bonus=lg.streak===3||lg.streak===7||lg.streak===14||lg.streak===30;
+    if(live&&d===today())confetti();
+    html='<div class="sheet ok" role="dialog" aria-modal="true" aria-labelledby="vh"><div class="crown" aria-hidden="true">🌸</div><div class="kicker">'+esc(pick(MSG_OK,seed))+'</div><h3 id="vh" class="big">Zsuzsanna, te vagy a legmenőbb nagymama az egész világon, maximális respekt!</h3>'+
+      '<p>'+when+' '+ft(dd.spent)+'-ot költöttél a '+ft(lim)+' keretből. Maradt: <b>'+ft(left)+'</b>.</p>'+
+      '<p>'+ft(Math.round(left*0.1))+' bekerült a bónusz kasszába, ezt nyugodtan elköltheted.</p>'+
+      '<p>Sorozat: <b>'+lg.streak+' nap</b>'+(bonus?' – sorozatbónusz!':'')+'</p>'+
+      '<div class="pts num">+'+lg.delta+' pont</div><button class="btn block" type="button" id="vOk">Köszönöm!</button></div>';
+  }
+  m.innerHTML=html;m.hidden=false;
+  $("vOk").focus();
+  $("vOk").onclick=function(){m.hidden=true;checkPending()};
+}
+function checkPending(){
+  var t=today(),pending=[];
+  for(var d=S.trackStart;d<t;d=addDays(d,1)){if(verdict(d)&&!S.ack[d])pending.push(d)}
+  if(!pending.length)return;
+  var last=pending[pending.length-1];
+  pending.forEach(function(d){S.ack[d]=true});save();
+  showVerdict(last,false);
+}
+
+/* ---------- NAPLÓ ---------- */
+var calMonth=today().slice(0,7),selDay=today();
+function monthDays(ym){var p=ym.split("-"),y=+p[0],m=+p[1];return {y:y,m:m,n:new Date(y,m,0).getDate(),first:(new Date(y,m-1,1).getDay()+6)%7}}
+function shiftMonth(ym,n){var p=ym.split("-");var d=new Date(+p[0],+p[1]-1+n,1);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")}
+function renderCal(){
+  var md=monthDays(calMonth),t=today();
+  $("calTitle").textContent=HU_MON.format(new Date(md.y,md.m-1,1));
+  var h=["H","K","Sze","Cs","P","Szo","V"].map(function(x){return '<div class="dow">'+x+'</div>'}).join("");
+  for(var i=0;i<md.first;i++)h+='<div class="day blank"></div>';
+  for(var d=1;d<=md.n;d++){
+    var ds=calMonth+"-"+String(d).padStart(2,"0"),v=verdict(ds),dd=dayData(ds);
+    var cls="day"+(v?" "+v:"")+(ds===t?" today":"")+(ds===selDay?" sel":"");
+    var sm=dd.spent?"−"+k(dd.spent):dd.income?"+"+k(dd.income):"";
+    h+='<button type="button" class="'+cls+'" data-day="'+ds+'"><span class="num">'+d+'</span><small class="num">'+sm+'</small></button>';
+  }
+  $("cal").innerHTML=h;renderDay();
+}
+$("cal").addEventListener("click",function(e){var b=e.target.closest("[data-day]");if(!b)return;selDay=b.dataset.day;renderCal()});
+$("calPrev").onclick=function(){calMonth=shiftMonth(calMonth,-1);renderCal()};
+$("calNext").onclick=function(){calMonth=shiftMonth(calMonth,1);renderCal()};
+function renderDay(){
+  var d=selDay,dd=dayData(d),v=verdict(d),lim=limitFor(d);
+  $("dayTitle").textContent=HU_DATE.format(parseYmd(d));
+  var vh="";
+  if(v==="ok")vh='<span class="chip ok"><i></i>Plafon alatt: '+ft(dd.spent)+' / '+ft(lim)+'</span>';
+  else if(v==="bad")vh='<span class="chip bad"><i></i>Elszállt a lé: '+ft(dd.spent)+' / '+ft(lim)+'</span>';
+  else if(d<S.trackStart)vh='<span class="chip neutral"><i></i>Még nem figyelted a zsét</span>';
+  else if(d<today())vh='<span class="chip neutral"><i></i>Ezt a napot nem vezetted</span>';
+  $("dayVerdict").innerHTML=vh;
+  $("dayList").innerHTML=dd.items.length?dd.items.map(function(e){return itemRow(e,true)}).join(""):'<div class="empty">Semmi mozgás ezen a napon.</div>';
+}
+
+/* ---------- HÓNAP ---------- */
+var mMonth=today().slice(0,7);
+function renderMonth(){
+  var md=monthDays(mMonth);$("mTitle").textContent=HU_MON.format(new Date(md.y,md.m-1,1));
+  var inc=0,varOut=0,byCat={},daily=[],work=0,guests=0;
+  for(var d=1;d<=md.n;d++){var ds=mMonth+"-"+String(d).padStart(2,"0"),dd=dayData(ds);inc+=dd.income;daily.push(dd.income);if(dd.income>0)work++;
+    dd.items.forEach(function(e){if(e.type==="out"){varOut+=e.amount;byCat[e.cat]=(byCat[e.cat]||0)+e.amount}})}
+  var lF=lelekFixed(),lAmt=lF;if(lF>0){var hs=0;HAPPY.forEach(function(c){hs+=byCat[c]||0;delete byCat[c]});varOut-=hs;lAmt=Math.max(lF,hs)}
+  var fx=fixedSum()-lF+lAmt,out=varOut+fx,rest=inc-out;
+  $("mIn").textContent=k(inc);$("mOut").textContent=k(out);$("mRest").textContent=k(rest);$("mRest").style.color=rest<0?"var(--bad)":"var(--good)";
+  $("mInSub").textContent=work?work+" bevételes nap, átlag "+ft(inc/work)+" / nap":"Ebben a hónapban még nincs bevétel.";
+  // oszlopdiagram
+  var W=Math.max(md.n*14,300),H=150,pad=22,max=Math.max(10000,Math.max.apply(null,daily));
+  var top=Math.ceil(max/20000)*20000,bw=Math.max(4,(W-pad)/md.n-3);
+  var s='<svg width="100%" viewBox="0 0 '+W+' '+(H+20)+'" role="img" aria-label="Napi bevétel oszlopdiagram">';
+  [0,.5,1].forEach(function(f){var y=H-f*(H-10);s+='<line x1="'+pad+'" x2="'+W+'" y1="'+y+'" y2="'+y+'" stroke="var(--line)" stroke-width="1"/><text x="0" y="'+(y+3)+'" font-size="9" fill="var(--muted)">'+k(top*f)+'</text>'});
+  daily.forEach(function(v,i){var x=pad+i*((W-pad)/md.n)+1,h=v/top*(H-10);s+='<rect x="'+x.toFixed(1)+'" y="'+(H-h).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="2" fill="'+(v?"var(--accent)":"var(--surface2)")+'"/>';
+    if((i+1)%5===0||i===0)s+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H+14)+'" font-size="9" text-anchor="middle" fill="var(--muted)">'+(i+1)+'</text>'});
+  $("mChart").innerHTML=s+"</svg>";
+  // kategóriák
+  var rows=Object.keys(byCat).map(function(c){return [CAT_NAME[c]||c,byCat[c],"var(--accent)"]});
+  S.settings.fixed.forEach(function(f){var am=f.id==="lelek"?lAmt:+f.amount;if(am>0)rows.push([f.name,am,"var(--muted)"])});
+  rows.sort(function(a,b){return b[1]-a[1]});var mx=rows.length?rows[0][1]:1;
+  var byA={};S.entries.forEach(function(e){if(e.type==="in"&&e.date.slice(0,7)===mMonth)byA[e.acct||"nincs"]=(byA[e.acct||"nincs"]||0)+e.amount});
+  var AN={otp:"OTP",otptart:"OTP tartalék",revo:"Revolut",kp:"Készpénz",nincs:"Nincs megadva"};var arows=Object.keys(byA).map(function(a){return [AN[a]||a,byA[a]]}).sort(function(a,b){return b[1]-a[1]}),amx=arows.length?arows[0][1]:1;
+  $("mAccts").innerHTML=arows.length?arows.map(function(r){return '<div class="bar"><span>'+esc(r[0])+'</span><div class="track"><div class="fill" style="width:'+(r[1]/amx*100).toFixed(1)+'%;background:var(--good)"></div></div><b class="num">'+k(r[1])+'</b></div>'}).join(""):'<div class="empty">Ebben a hónapban még nincs bevétel beírva.</div>';
+  $("mCats").innerHTML=rows.length?rows.map(function(r){return '<div class="bar"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(r[0])+'</span><div class="track"><div class="fill" style="width:'+(r[1]/mx*100).toFixed(1)+'%;background:'+r[2]+'"></div></div><b class="num">'+k(r[1])+'</b></div>'}).join("")+'<div class="legend"><span><i style="background:var(--accent)"></i>Napi szórás</span><span><i style="background:var(--muted)"></i>Fix lehúzás</span></div>':'<div class="empty">Ebben a hónapban még nem ment el lé.</div>';
+}
+$("mPrev").onclick=function(){mMonth=shiftMonth(mMonth,-1);renderMonth()};
+$("mNext").onclick=function(){mMonth=shiftMonth(mMonth,1);renderMonth()};
+
+/* ---------- BEÁLLÍTÁS ---------- */
+function renderSettings(){
+  var st=S.settings;
+  setVal("incExp",st.incomeExpected!=null?n0(st.incomeExpected):"");$("incExp").placeholder=n0(histIncomeMonthly());
+  $("incHint").textContent="üresen: az utolsó 60 nap alapján "+ft(histIncomeMonthly());
+  setVal("saveGoal",st.savingsGoal?n0(st.savingsGoal):"");$("saveGoal").placeholder="0";
+  setVal("manLimit",st.manualLimit!=null?n0(st.manualLimit):"");
+  $("sugLimit").textContent=ft(suggestedLimit())+" / nap";
+  $("carry").checked=!!st.carry;
+  if(!$("fixedList").children.length){
+    $("fixedList").innerHTML=st.fixed.map(function(f){return '<div class="field"><label for="fx-'+f.id+'">'+esc(f.name)+(f.id==="lelek"?'<small>ruha, nasi, kacatok, bolondságok – ha megadod, ezek nem a napi keretből mennek</small>':'')+(String(f.id).indexOf("c_")===0?'<button type="button" class="x" data-fxdel="'+f.id+'" aria-label="Sor törlése" style="margin-left:6px">×</button>':'')+'</label><input id="fx-'+f.id+'" data-fx="'+f.id+'" inputmode="numeric" placeholder="0"></div>'}).join("");
+  }
+  st.fixed.forEach(function(f){setVal("fx-"+f.id,f.amount?n0(f.amount):"")});
+  $("fixedSum").textContent=ft(fixedSum());
+  $("storeWarn").textContent=storageOK?"":"Figyelem: ez a böngésző nem engedi a mentést, bezáráskor elvesznek az adatok. Nyisd meg Safariban.";
+}
+function setVal(id,v){var el=$(id);if(document.activeElement!==el)el.value=v}
+function numInput(id,fn){$(id).addEventListener("input",function(){var v=digits(this.value);this.value=v==null?"":n0(v);fn(v);save();resetCache();refreshSettingsLive()})}
+function refreshSettingsLive(){$("sugLimit").textContent=ft(suggestedLimit())+" / nap";$("fixedSum").textContent=ft(fixedSum())}
+numInput("incExp",function(v){S.settings.incomeExpected=v});
+numInput("saveGoal",function(v){S.settings.savingsGoal=v||0});
+numInput("manLimit",function(v){S.settings.manualLimit=v});
+$("nfAdd").onclick=function(){var n=$("nfName").value.trim(),a=digits($("nfAmt").value)||0;if(!n){toast("Írd be a sor nevét");$("nfName").focus();return}
+  S.settings.fixed.push({id:"c_"+uid(),name:n,amount:a});$("nfName").value="";$("nfAmt").value="";$("fixedList").innerHTML="";save();resetCache();renderAll();toast("Sor hozzáadva: "+n)};
+$("fixedList").addEventListener("click",function(e){var b=e.target.closest("[data-fxdel]");if(!b)return;var id=b.dataset.fxdel,f=S.settings.fixed.filter(function(x){return x.id===id})[0];
+  if(b.textContent!=="Biztos?"){b.textContent="Biztos?";return}
+  S.settings.fixed=S.settings.fixed.filter(function(x){return x.id!==id});$("fixedList").innerHTML="";save();resetCache();renderAll();toast("Sor törölve: "+(f?f.name:""))});
+$("fixedList").addEventListener("input",function(e){var el=e.target.closest("[data-fx]");if(!el)return;var v=digits(el.value);el.value=v==null?"":n0(v);
+  S.settings.fixed.forEach(function(f){if(f.id===el.dataset.fx)f.amount=v||0});save();resetCache();refreshSettingsLive()});
+$("carry").onchange=function(){S.settings.carry=this.checked;save();resetCache()};
+
+$("copyBk").onclick=function(){var txt=JSON.stringify(S),ta=$("bkText");ta.value=txt;
+  try{navigator.clipboard.writeText(txt).then(function(){toast("Mentés a vágólapon")},function(){ta.hidden=false;ta.select();toast("Jelöld ki és másold ki")})}catch(e){ta.hidden=false;ta.select()}};
+$("showImp").onclick=function(){$("impBox").hidden=!$("impBox").hidden};
+$("doImp").onclick=function(){try{var o=JSON.parse($("impText").value);if(o&&o.kind==="bevetel-import"){var ids={};S.entries.forEach(function(e){ids[e.id]=1});var n=0;o.entries.forEach(function(e){if(!ids[e.id]){S.entries.push(e);n++}});save();resetCache();$("impBox").hidden=true;$("impText").value="";renderAll();toast(n+" bevételes nap betöltve");return}if(!o||!o.entries||!o.settings)throw 0;S=o;if(!S.closed)S.closed={};if(!S.ack)S.ack={};ensureGoals();ensureWealth();$("wAcc").innerHTML="";save();resetCache();$("fixedList").innerHTML="";$("impBox").hidden=true;renderAll();toast("Mentés betöltve")}catch(e){toast("Ez nem érvényes mentés")}};
+$("resetBtn").onclick=function(){$("resetYes").hidden=false};
+$("resetYes").onclick=function(){var keep=S.settings;S=fresh();S.settings=keep;save();resetCache();$("resetYes").hidden=true;renderAll();toast("Tiszta lap")};
+
+
+/* ---------- LÉLEKCSIHOLÓ ---------- */
+function daysLeft(){var d=new Date(),n=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();return n-d.getDate()+1}
+function renderLelek(){
+  var t=today(),B=lelekFixed(),first=t.slice(0,8)+"01",before=happySpent(first,addDays(t,-1)),todayH=happySpent(t,t);
+  var rem=Math.max(0,B-before),dl=daysLeft(),daily=rem/dl,left=daily-todayH,ratio=daily>0?todayH/daily:(todayH>0?2:0);
+  var st=ratio>1?"bad":ratio>=.8?"warn":"ok";$("lStatus").className="status "+st;
+  $("lBig").textContent=ft(Math.max(0,left));
+  $("lBar").style.width=Math.min(100,ratio*100).toFixed(1)+"%";
+  $("lToday").textContent="Ma már: "+ft(todayH);
+  $("lDays").textContent="Hátra: "+dl+" nap";
+  $("lMsg").textContent=B===0?"Nincs még lélekcsiholó keret. A Beállításban add meg, és ezek nem a napi keretből mennek.":
+    ratio>1?"Ma túlmentél a napi adagon "+ft(-left)+"-tal. A hónap többi napjára kevesebb jut.":
+    ratio>=.8?"Majdnem elfogyott a mai adag, még "+ft(left)+".":"Még "+ft(left)+" mehet ma a lelkedre.";
+  $("lSub").textContent=B>0?"Havi keret: "+ft(B)+" · eddig elment: "+ft(before+todayH)+" · maradt: "+ft(Math.max(0,B-before-todayH)):"";
+  $("lQuick").innerHTML=HAPPY.map(function(c){return '<button type="button" data-lq="'+c+'">'+esc(CAT_NAME[c])+'</button>'}).join("");
+  var by={};S.entries.forEach(function(e){if(e.type==="out"&&isHappy(e.cat)&&e.date>=first&&e.date<=t)by[e.cat]=(by[e.cat]||0)+e.amount});
+  var rows=Object.keys(by).map(function(c){return [CAT_NAME[c],by[c]]}).sort(function(a,b){return b[1]-a[1]}),mx=rows.length?rows[0][1]:1;
+  $("lCats").innerHTML=rows.length?rows.map(function(r){return '<div class="bar"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(r[0])+'</span><div class="track"><div class="fill" style="width:'+(r[1]/mx*100).toFixed(1)+'%;background:var(--pink)"></div></div><b class="num">'+k(r[1])+'</b></div>'}).join(""):'<div class="empty">Ebben a hónapban még semmi nem csiholt. Az se baj.</div>';
+  var items=S.entries.filter(function(e){return e.type==="out"&&isHappy(e.cat)&&e.date===t}).reverse();
+  $("lList").innerHTML=items.length?items.map(function(e){return itemRow(e,true)}).join(""):'<div class="empty">Ma még semmi. Egy csoki belefér, csak írd be.</div>';
+}
+$("lQuick").addEventListener("click",function(e){var b=e.target.closest("[data-lq]");if(b)openEntry("out",b.dataset.lq)});
+
+/* ---------- VAGYON ---------- */
+var WACC=[["otp","Vagyonfigyelő OTP",""],["otptart","OTP tartalék",""],["revo","Revolut",""],["kp","Készpénz",""],["auto","Autó befektetés",""],["boritek","Borítékos készpénz",""],["tartozas","Tartozás","amit mások tartoznak neked"]];
+function ensureWealth(){if(!S.wealth)S.wealth={acc:{},eur:0,rate:400,hist:[]}}ensureWealth();
+function wealthTotal(){var w=S.wealth,t=0;WACC.forEach(function(a){t+=+w.acc[a[0]]||0});return t+Math.round((+w.eur||0)*(+w.rate||0))}
+function renderVagyon(){ensureWealth();var w=S.wealth,tot=wealthTotal(),h=w.hist,prev=h.length?h[h.length-1]:null;
+  $("wTotal").textContent=ft(tot);
+  $("wPrev").textContent=prev?"Előző rögzítés ("+prev.ym+"): "+ft(prev.total):"Még nincs rögzített hónap";
+  var d=prev?tot-prev.total:0;$("wDelta").textContent=prev?((d>=0?"+":"")+ft(d)):"";$("wDelta").style.color=d>=0?"var(--good)":"var(--bad)";
+  $("wStatus").className="status "+(prev?(d>=0?"ok":"warn"):"ok");
+  $("wMsg").textContent=prev?(d>=0?"Gyarapodott a vagyon az előző rögzítés óta. Szép munka, Zsuzsanna!":"Csökkent az előző rögzítés óta. Nézd meg a Napló fület, hova ment."):"Írd be az egyenlegeket, és rögzítsd az első hónapot.";
+  if(!$("wAcc").children.length)$("wAcc").innerHTML=WACC.map(function(a){return '<div class="wrow"><label for="wa-'+a[0]+'">'+a[1]+(a[2]?'<small>'+a[2]+'</small>':'')+'</label><input id="wa-'+a[0]+'" data-wa="'+a[0]+'" inputmode="numeric" placeholder="0"></div>'}).join("");
+  WACC.forEach(function(a){setVal("wa-"+a[0],w.acc[a[0]]?n0(w.acc[a[0]]):"")});
+  setVal("wEur",w.eur?n0(w.eur):"");setVal("wRate",w.rate?n0(w.rate):"");$("wEurFt").textContent=ft(Math.round((+w.eur||0)*(+w.rate||0)));
+  var ym=today().slice(0,7),already=h.some(function(x){return x.ym===ym});
+  $("wSnap").textContent=already?"Ez a hónap már rögzítve – frissítem":"Havi összesítés rögzítése";
+  $("wHist").innerHTML=h.length?h.slice().reverse().slice(0,12).map(function(x,i,arr){var pr=arr[i+1];var dd=pr?x.total-pr.total:null;return '<div class="whist"><div><b>'+x.ym+'</b><div class="d">'+WACC.map(function(a){return x.acc[a[0]]?a[1]+": "+k(x.acc[a[0]]):""}).filter(Boolean).join(" · ")+(x.eur?" · €"+n0(x.eur):"")+'</div></div><b class="num">'+ft(x.total)+'</b><span class="num '+(dd==null?"d":dd>=0?"pos":"neg")+'">'+(dd==null?"első":(dd>=0?"+":"")+k(dd))+'</span></div>'}).join(""):'<div class="empty">Még nincs rögzített hónap.</div>';
+}
+$("wAcc").addEventListener("input",function(e){var el=e.target.closest("[data-wa]");if(!el)return;var v=digits(el.value);el.value=v==null?"":n0(v);S.wealth.acc[el.dataset.wa]=v||0;save();renderVagyon()});
+$("wEur").addEventListener("input",function(){var v=digits(this.value);this.value=v==null?"":n0(v);S.wealth.eur=v||0;save();renderVagyon()});
+$("wRate").addEventListener("input",function(){var v=digits(this.value);this.value=v==null?"":n0(v);S.wealth.rate=v||0;save();renderVagyon()});
+$("wSnap").onclick=function(){var w=S.wealth,ym=today().slice(0,7),snap={ym:ym,date:today(),acc:{},eur:w.eur,rate:w.rate,total:wealthTotal()};WACC.forEach(function(a){snap.acc[a[0]]=+w.acc[a[0]]||0});
+  w.hist=w.hist.filter(function(x){return x.ym!==ym});w.hist.push(snap);w.hist.sort(function(a,b){return a.ym<b.ym?-1:1});save();renderVagyon();confetti();toast("Havi összesítés elmentve: "+ft(snap.total))};
+
+/* ---------- NAGYBEVÁSÁRLÁS ---------- */
+function bigShops(){return S.entries.filter(function(e){return e.big}).sort(function(a,b){return a.date<b.date?1:-1})}
+function weekBig(ws){var we=addDays(ws,6);return S.entries.filter(function(e){return e.big&&e.date>=ws&&e.date<=we})}
+function weekSpend(ws){var we=addDays(ws,6),s=0;S.entries.forEach(function(e){if(e.type==="out"&&e.cat!=="jutalom"&&e.date>=ws&&e.date<=we)s+=e.amount});return s}
+function storeDays(ws){var we=addDays(ws,6),d={};S.entries.forEach(function(e){if(e.type==="out"&&!e.big&&(e.cat==="kaja")&&e.date>=ws&&e.date<=we)d[e.date]=1});return Object.keys(d).length}
+function weekSaving(ws){var we=addDays(ws,6),t=today(),end=we<t?we:t,start=ws<S.trackStart?S.trackStart:ws,days=Math.max(0,daysBetween(start,end)+1);return Math.round(baseLimit()*days-weekSpend(ws))}
+function renderBolt(){
+  var t=today(),ws=weekStart(t),wb=weekBig(ws),has=wb.length>0,st=$("bStatus");
+  st.className="status "+(has?"ok":"warn");
+  $("bLabel").textContent=has?"Ezen a héten megvolt a nagybevásárlás:":"Ezen a héten még nem volt nagybevásárlás.";
+  $("bBig").textContent=has?ft(wb.reduce(function(a,e){return a+e.amount},0)):"0 Ft";
+  $("bMsg").textContent=has?"Szép. Most már csak az apróságokért menj boltba.":"Egyszer menj el nagyban, írd be ide, és a hét többi napján maradj távol a bolttól.";
+  $("bSub").textContent=has?"Napi keret 7 napig: "+ft(dayLimitBase(t))+" (a nagybev nélkül "+ft(baseLimit())+" lenne)":"Ha beírsz pl. 25 000 Ft-ot, a napi keret 7 napig "+ft(Math.max(0,baseLimit()-25000/7))+" lesz "+ft(baseLimit())+" helyett.";
+  $("bAddBtn").textContent=has?"+ Még egy beírása (ritkán kéne)":"+ Nagybevásárlás beírása";
+  $("bDays").textContent=storeDays(ws);
+  var sw=weekSaving(ws);$("bSaveWeek").textContent=k(sw);$("bSaveWeek").style.color=sw<0?"var(--bad)":"var(--good)";
+  var weeks={};bigShops().forEach(function(e){weeks[weekStart(e.date)]=1});var all=0;Object.keys(weeks).forEach(function(w){all+=Math.max(0,weekSaving(w))});
+  $("bSaveAll").textContent=k(all);
+  var list=bigShops().slice(0,10);
+  $("bList").innerHTML=list.length?list.map(function(e){var w=weekStart(e.date),sv=weekSaving(w);return '<div class="shop-row"><div><b>'+HU_DATE.format(parseYmd(e.date))+'</b><small>'+esc(e.note||"nagybevásárlás")+' · a hét: '+ft(weekSpend(w))+' összesen, '+storeDays(w)+' bolti nap</small></div><div><div class="sv num '+(sv>=0?"pos":"neg")+'">'+(sv>=0?"+":"")+k(sv)+'</div><button class="x" type="button" aria-label="Törlés" data-del="'+e.id+'" style="float:right">×</button></div></div>'}).join(""):'<div class="empty">Még nem volt nagybevásárlás. Az első után itt látod, mennyit spórolt a hét.</div>';
+}
+$("bAddBtn").onclick=function(){var t=today(),ws=weekStart(t),n=weekBig(ws).length;
+  $("bHint").textContent=n?"Ezen a héten már volt egy. Ha muszáj, mehet, de a lényeg az, hogy ritkán menj.":"Ez a nap nem megy mínuszba. Az összeg 7 napra oszlik el a keretból.";
+  $("bQuick").innerHTML=[15000,20000,30000,40000].map(function(a){return '<button type="button" data-ba="'+a+'">'+n0(a)+'</button>'}).join("");
+  $("bAmt").value="";$("bNote").value="";$("bSheet").hidden=false;setTimeout(function(){$("bAmt").focus()},50)};
+$("bClose").onclick=function(){$("bSheet").hidden=true};
+$("bSheet").addEventListener("click",function(e){if(e.target===this)this.hidden=true});
+$("bAmt").addEventListener("input",function(){var v=digits(this.value);this.value=v==null?"":n0(v)});
+$("bQuick").addEventListener("click",function(e){var b=e.target.closest("[data-ba]");if(b)$("bAmt").value=n0(+b.dataset.ba)});
+$("bForm").addEventListener("submit",function(e){e.preventDefault();var a=digits($("bAmt").value);if(!a){toast("Írd be, mennyi zsé");return}
+  S.entries.push({id:uid(),date:today(),type:"out",amount:a,cat:"nagybev",note:$("bNote").value.trim(),big:true});
+  $("bSheet").hidden=true;save();renderAll();confetti();toast("Nagybevásárlás beírva. Most egy hétig kerüld a boltot!")});
+
+/* ---------- CÉLOK ---------- */
+var GT={short:[["Masszázs-bérlet",40000,1],["Ajándék az unokáknak",50000,2],["Könyvek, képzés",80000,3]],long:[["Tartalék",1000000,12],["Családi nyaralás",600000,8],["Új autó",3000000,36]]};
+var gType="short",gEditId=null,gDepId=null,gDepSign=1;
+function addMonths(m){var d=new Date();d.setMonth(d.getMonth()+m);return ymd(d)}
+function daysTo(ds){return Math.round((parseYmd(ds)-parseYmd(today()))/864e5)}
+var HU_FULL=new Intl.DateTimeFormat("hu-HU",{year:"numeric",month:"long",day:"numeric"});
+function goalNeed(gl){var rem=Math.max(0,gl.target-gl.saved),d=daysTo(gl.deadline);
+  return {rem:rem,days:d,perMonth:d>0?rem/Math.max(1,d/30.4):rem,perDay:d>0?rem/d:rem}}
+function goalCard(gl){
+  var n=goalNeed(gl),pct=gl.target?Math.min(100,gl.saved/gl.target*100):0,need;
+  if(gl.done)need='<b>Megvan!</b> '+HU_FULL.format(parseYmd(gl.done))+' – +'+(gl.type==="long"?150:50)+' bónuszpont';
+  else if(n.days<0)need='<b>Lejárt a határidő</b> ('+HU_FULL.format(parseYmd(gl.deadline))+'). Még '+ft(n.rem)+' hiányzik. Állíts be új dátumot.';
+  else need='Még <b>'+ft(n.rem)+'</b> zsé kell, '+n.days+' nap van hátra.<br>Ehhez havonta <b>'+ft(Math.ceil(n.perMonth/100)*100)+'</b>-ot dugj félre (naponta kb. '+ft(Math.ceil(n.perDay/10)*10)+').';
+  return '<div class="goal'+(gl.done?" done":"")+'"><div class="g-top"><div class="g-name">'+esc(gl.name)+'</div><span class="chip '+(gl.done?"ok":gl.type==="long"?"neutral":"warn")+'"><i></i>'+(gl.type==="long"?"Hosszú":"Rövid")+'</span></div>'+
+   '<div class="g-amt num"><span><b>'+ft(gl.saved)+'</b></span><span class="muted">/ '+ft(gl.target)+' ('+Math.floor(pct)+'%)</span></div>'+
+   '<div class="progress thin"><div style="width:'+pct.toFixed(1)+'%;'+(gl.done?"background:var(--good)":"")+'"></div></div>'+
+   '<div class="g-need">'+need+'</div>'+
+   '<div class="g-btns">'+(gl.done?'':'<button type="button" class="pri" data-gdep="'+gl.id+'">+ Befizetés</button>')+'<button type="button" data-gout="'+gl.id+'">Kivét</button><button type="button" data-gedit="'+gl.id+'">Szerkeszt</button><button type="button" class="danger" data-gdel="'+gl.id+'">Töröl</button></div></div>';
+}
+function renderGoals(){
+  var tot=0,mon=0;S.goals.forEach(function(gl){tot+=gl.saved;if(!gl.done){var n=goalNeed(gl);if(n.days>0)mon+=n.perMonth}});
+  $("gTotal").textContent=ft(tot);
+  var sg=+S.settings.savingsGoal||0;
+  $("gMonthly").innerHTML=mon>0?'A céljaidhoz havonta kb. <b>'+ft(Math.ceil(mon/100)*100)+'</b> kell. A Beállításban megadott megtakarítás: <b>'+ft(sg)+'</b>.'+(sg<mon?' <button type="button" class="btn ghost" id="gSyncSave" style="padding:6px 10px;font-size:13px;margin-top:8px">Legyen ez a megtakarítás</button>':' Ez bőven fedezi.'):'Még nincs cél. Nyomd meg az „Új cél” gombot.';
+  var sh=S.goals.filter(function(x){return x.type==="short"}),lo=S.goals.filter(function(x){return x.type==="long"});
+  $("gShort").innerHTML=sh.length?sh.map(goalCard).join(""):'<div class="empty">Nincs rövid távú cél. Például: masszázs-bérlet, ajándék az unokáknak, könyvek.</div>';
+  $("gLong").innerHTML=lo.length?lo.map(goalCard).join(""):'<div class="empty">Nincs hosszú távú cél. Például: tartalék, családi nyaralás, új autó.</div>';
+}
+function setGType(t){gType=t;$("gTShort").setAttribute("aria-pressed",t==="short");$("gTLong").setAttribute("aria-pressed",t==="long");
+  $("gTemplates").innerHTML=gEditId?"":GT[t].map(function(x,i){return '<button type="button" data-gt="'+i+'">'+esc(x[0])+'</button>'}).join("");
+  if(!gEditId)$("gDate").value=addMonths(t==="short"?3:12)}
+function openGoal(id){gEditId=id||null;var gl=id&&S.goals.filter(function(x){return x.id===id})[0];
+  $("gTitle").textContent=gl?"Cél szerkesztése":"Új cél";setGType(gl?gl.type:"short");
+  $("gName").value=gl?gl.name:"";$("gTarget").value=gl?n0(gl.target):"";$("gStart").value=gl&&gl.saved?n0(gl.saved):"";if(gl)$("gDate").value=gl.deadline;
+  $("gSheet").hidden=false}
+$("gNewBtn").onclick=function(){openGoal()};
+$("gTShort").onclick=function(){setGType("short")};$("gTLong").onclick=function(){setGType("long")};
+$("gClose").onclick=function(){$("gSheet").hidden=true};
+$("gSheet").addEventListener("click",function(e){if(e.target===this)this.hidden=true});
+$("gTemplates").addEventListener("click",function(e){var b=e.target.closest("[data-gt]");if(!b)return;var x=GT[gType][+b.dataset.gt];$("gName").value=x[0];$("gTarget").value=n0(x[1]);$("gDate").value=addMonths(x[2])});
+["gTarget","gStart","gDepAmt"].forEach(function(id){$(id).addEventListener("input",function(){var v=digits(this.value);this.value=v==null?"":n0(v)})});
+$("gForm").addEventListener("submit",function(e){e.preventDefault();
+  var name=$("gName").value.trim(),target=digits($("gTarget").value),dl=$("gDate").value,start=digits($("gStart").value)||0;
+  if(!name){toast("Írd be, mire gyűjtesz");return}if(!target){toast("Írd be, mennyi lé kell");return}if(!dl){toast("Válassz határidőt");return}
+  var gl;if(gEditId){gl=S.goals.filter(function(x){return x.id===gEditId})[0];gl.name=name;gl.target=target;gl.deadline=dl;gl.type=gType;gl.saved=start}
+  else{gl={id:uid(),name:name,type:gType,target:target,deadline:dl,saved:start,created:today(),done:null};S.goals.push(gl)}
+  var wasDone=!!gl.done;gl.done=gl.saved>=gl.target?(gl.done||today()):null;
+  $("gSheet").hidden=true;save();renderAll();if(gl.done&&!wasDone)goalReward(gl);else toast("Cél mentve")});
+function openDep(id,sign){gDepId=id;gDepSign=sign;var gl=S.goals.filter(function(x){return x.id===id})[0];
+  $("gDepTitle").textContent=sign>0?"Befizetés":"Kivét";
+  $("gDepSub").textContent=gl.name+": "+ft(gl.saved)+" / "+ft(gl.target);
+  var n=goalNeed(gl),q=sign>0?[5000,10000,Math.ceil(n.perMonth/1000)*1000,n.rem]:[5000,10000,gl.saved];
+  q=q.filter(function(v,i,a){return v>0&&a.indexOf(v)===i});
+  $("gDepQuick").innerHTML=q.map(function(v){return '<button type="button" data-gq="'+v+'">'+(sign>0&&v===n.rem?"Ami még kell: "+ft(v):sign<0&&v===gl.saved?"Az egészet ("+ft(v)+")":ft(v))+'</button>'}).join("");
+  $("gDepAmt").value="";$("gDepSheet").hidden=false;setTimeout(function(){$("gDepAmt").focus()},50)}
+$("gDepQuick").addEventListener("click",function(e){var b=e.target.closest("[data-gq]");if(!b)return;$("gDepAmt").value=n0(+b.dataset.gq);var f=$("gDepForm");if(f.requestSubmit)f.requestSubmit();else f.dispatchEvent(new Event("submit",{cancelable:true}))});
+$("gDepClose").onclick=function(){$("gDepSheet").hidden=true};
+$("gDepSheet").addEventListener("click",function(e){if(e.target===this)this.hidden=true});
+$("gDepForm").addEventListener("submit",function(e){e.preventDefault();var a=digits($("gDepAmt").value);if(!a){toast("Írd be, mennyi zsé");return}
+  var gl=S.goals.filter(function(x){return x.id===gDepId})[0];
+  if(gDepSign<0&&a>gl.saved){toast("Csak "+ft(gl.saved)+" zsé van benne");return}
+  gl.saved+=gDepSign*a;if(gDepSign>0){if(!S.goalLog)S.goalLog=[];S.goalLog.push({date:today(),id:gl.id,amount:a})}var wasDone=!!gl.done;gl.done=gl.saved>=gl.target?(gl.done||today()):null;
+  $("gDepSheet").hidden=true;save();renderAll();if(gl.done&&!wasDone)goalReward(gl);else toast(gDepSign>0?"Berakva":"Kivéve")});
+function goalReward(gl){var m=$("modal"),b=gl.type==="long"?150:50;
+  m.innerHTML='<div class="sheet ok" role="dialog" aria-modal="true" aria-labelledby="vh"><div class="kicker">Cél teljesítve</div><h3 id="vh">Megvan! '+esc(gl.name)+'</h3><p>Összejött a '+ft(gl.target)+'. Szép munka volt, le a kalappal.</p><div class="pts num">+'+b+' bónuszpont</div><button class="btn block" type="button" id="vOk">Királyság!</button></div>';
+  m.hidden=false;$("vOk").onclick=function(){m.hidden=true}}
+var gDelArm=null;
+document.addEventListener("click",function(e){
+  var b=e.target.closest("[data-gdep],[data-gout],[data-gedit],[data-gdel],#gSyncSave");if(!b)return;
+  if(b.id==="gSyncSave"){var mon=0;S.goals.forEach(function(gl){if(!gl.done){var n=goalNeed(gl);if(n.days>0)mon+=n.perMonth}});S.settings.savingsGoal=Math.ceil(mon/1000)*1000;save();renderAll();toast("Dugipénz beállítva, a napi keret frissült");return}
+  if(b.dataset.gdep)openDep(b.dataset.gdep,1);
+  else if(b.dataset.gout)openDep(b.dataset.gout,-1);
+  else if(b.dataset.gedit)openGoal(b.dataset.gedit);
+  else if(b.dataset.gdel){if(gDelArm===b.dataset.gdel){S.goals=S.goals.filter(function(x){return x.id!==gDelArm});gDelArm=null;save();renderAll();toast("Cél törölve")}else{gDelArm=b.dataset.gdel;b.textContent="Biztos?"}}
+});
+
+/* ---------- KÜLDIK ---------- */
+function weekStart(d){var dt=parseYmd(d),dow=(dt.getDay()+6)%7;dt.setDate(dt.getDate()-dow);return ymd(dt)}
+function daysBetween(a,b){return Math.round((parseYmd(b)-parseYmd(a))/864e5)}
+function okDays(a,b){var n=0;for(var d=a;d<=b;d=addDays(d,1))if(verdict(d)==="ok")n++;return n}
+function depositsBetween(a,b){return (S.goalLog||[]).filter(function(x){return x.date>=a&&x.date<=b}).reduce(function(s,x){return s+x.amount},0)}
+function monthSaveTarget(){return Math.max(+S.settings.savingsGoal||0,20000)}
+var MISSIONS={
+ daily:[
+  {id:"d1",name:"Írj be ma legalább egy tételt",pts:5,check:function(t){var n=dayData(t).items.filter(function(e){return e.src!=="altegio"}).length;return {done:n>0,prog:n?n+" tétel":"még semmi"}}},
+  {id:"d2",name:"Zárd le a napot a kereten belül",pts:10,check:function(t){return {done:!!S.closed[t]&&verdict(t)==="ok",prog:S.closed[t]?"lezárva":"este nyomd meg a napzárást"}}},
+  {id:"d3",name:"Hagyd meg a napi keret legalább 30%-át",pts:10,check:function(t){var dd=dayData(t),lim=limitFor(t);return {done:!!S.closed[t]&&lim>0&&dd.spent<=lim*0.7,prog:lim>0?Math.max(0,Math.round((1-dd.spent/lim)*100))+"% van még":"nincs keret"}}},
+  {id:"hw",only:function(t){return false},name:"-",pts:31,check:function(t){return {done:!!S.closed[t]&&verdict(t)==="ok",prog:S.closed[t]?"lezárva":"csak ma"}}},
+ ],
+ weekly:[
+  {id:"w1",name:"Zárj le 5 napot a kereten belül a héten",pts:25,check:function(t){var n=okDays(weekStart(t),t);return {done:n>=5,prog:n+" / 5 nap"}}},
+  {id:"w2",name:"Tegyél félre egy célra a héten",pts:20,check:function(t){var sum=depositsBetween(weekStart(t),t);return {done:sum>0,prog:sum?ft(sum)+" berakva":"még semmi"}}},
+  {id:"w3",name:"Egy nap se lépd túl a keretet a héten",pts:30,check:function(t){var ws=weekStart(t),we=addDays(ws,6),bad=0,n=0;for(var d=ws;d<=t;d=addDays(d,1)){var v=verdict(d);if(v==="bad")bad++;if(v)n++}return {done:bad===0&&t>=we&&n>=4,prog:bad?bad+" túllépés":n+" nap rendben"+(t<we?", vasárnap dől el":"")}}},
+  {id:"w4",name:"Csinálj egy heti nagybevásárlást",pts:25,check:function(t){var n=weekBig(weekStart(t)).length;return {done:n>0,prog:n?"megvolt":"Bolt fül → beírás"}}},
+  {id:"w5",name:"Legfeljebb 2 bolti nap a héten a nagybevásárlás mellett",pts:30,check:function(t){var ws=weekStart(t),we=addDays(ws,6),n=storeDays(ws),has=weekBig(ws).length>0;return {done:t>=we&&has&&n<=2,prog:n+" bolti nap"+(has?"":", nagybev még nincs")+(t<we?", vasárnap dől el":"")}}},
+ ],
+ monthly:[
+  {id:"m1",name:"Állíts be egy rövid távú célt, ami 1 hónap alatt teljesíthető",pts:30,check:function(t){var ym=t.slice(0,7),ok=S.goals.some(function(g){return g.type==="short"&&g.created&&g.created.slice(0,7)===ym&&daysBetween(g.created,g.deadline)<=31});return {done:ok,prog:ok?"beállítva":"Célok fül → Új cél"}}},
+  {id:"m2",name:"Teljesíts egy célt ebben a hónapban",pts:50,check:function(t){var ym=t.slice(0,7),n=S.goals.filter(function(g){return g.done&&g.done.slice(0,7)===ym}).length;return {done:n>0,prog:n?n+" kész":"még egy se"}}},
+  {id:"m3",name:"Maradj 18 napon a kereten belül a hónapban",pts:60,check:function(t){var n=okDays(t.slice(0,8)+"01",t);return {done:n>=18,prog:n+" / 18 nap"}}},
+  {id:"m4",name:function(){return "Tegyél félre "+ft(monthSaveTarget())+"-ot a hónapban"},pts:40,check:function(t){var sum=depositsBetween(t.slice(0,8)+"01",t);return {done:sum>=monthSaveTarget(),prog:ft(sum)+" / "+ft(monthSaveTarget())}}}
+ ]};
+function mname(m){return typeof m.name==="function"?m.name():m.name}
+function periodKey(p,t){return p==="daily"?t:p==="weekly"?weekStart(t):t.slice(0,7)}
+var missionToastT;
+function evalMissions(){var t=today(),newly=[];if(!S.missions)S.missions={};
+  ["daily","weekly","monthly"].forEach(function(p){MISSIONS[p].filter(function(m){return !m.only||m.only(t)}).forEach(function(m){var key=p+":"+periodKey(p,t)+":"+m.id;if(S.missions[key])return;if(m.check(t).done){S.missions[key]=m.pts;newly.push(m)}})});
+  if(newly.length){save();resetCache();var pts=newly.reduce(function(a,m){return a+m.pts},0);clearTimeout(missionToastT);
+    missionToastT=setTimeout(function(){toast(newly.length===1?"Küldi kész: "+mname(newly[0])+" (+"+pts+" pont)":newly.length+" küldi kész, +"+pts+" pont!")},900)}}
+var qPeriod="daily",QT={daily:"Mai küldetések",weekly:"Heti küldetések",monthly:"Havi küldetések"};
+function renderQuests(){var t=today(),list=MISSIONS[qPeriod].filter(function(m){return !m.only||m.only(t)}),done=0;
+  $("qTitle").textContent=QT[qPeriod];
+  $("qList").innerHTML=list.map(function(m){var key=qPeriod+":"+periodKey(qPeriod,t)+":"+m.id,r=m.check(t),d=!!S.missions[key]||r.done;if(d)done++;
+    return '<div class="q'+(d?" done":"")+'"><div class="ck">✓</div><div><div class="n">'+esc(mname(m))+'</div><div class="p">'+esc(d?"kész":r.prog)+'</div></div><div class="r num">+'+m.pts+'</div></div>'}).join("");
+  $("qPts").textContent=done+" / "+list.length+" kész";
+  var m1=MISSIONS.monthly[0],k1="monthly:"+t.slice(0,7)+":m1";
+  $("qFirst").innerHTML=(S.missions[k1]||m1.check(t).done)?"":'<div class="qfirst"><div><b>Első küldetés:</b> állíts be egy rövid távú célt, ami 1 hónap alatt teljesíthető. +30 pont.</div><button class="btn" type="button" data-go="celok">Beállítom</button></div>';
+}
+document.querySelector(".qseg").addEventListener("click",function(e){var b=e.target.closest("[data-qp]");if(!b)return;qPeriod=b.dataset.qp;
+  document.querySelectorAll(".qseg button").forEach(function(x){x.setAttribute("aria-pressed",x===b)});renderQuests()});
+
+/* ---------- fülek ---------- */
+var views={ma:"v-ma",lelek:"v-lelek",vagyon:"v-vagyon",bolt:"v-bolt",celok:"v-celok",naplo:"v-naplo",beall:"v-beall"},cur="ma";
+function go(tab){cur=tab;Object.keys(views).forEach(function(k){$(views[k]).hidden=k!==tab});
+  document.querySelectorAll("nav.tabs button").forEach(function(b){if(b.dataset.tab===tab)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+  renderAll();window.scrollTo(0,0)}
+document.querySelector("nav.tabs").addEventListener("click",function(e){var b=e.target.closest("[data-tab]");if(b)go(b.dataset.tab)});
+
+function renderAll(){resetCache();evalMissions();renderToday();renderQuests();if(typeof hwApply==="function"&&h1El)document.documentElement.classList.toggle("hw",hwOn());if(cur==="naplo"){renderCal();renderMonth()}if(cur==="beall")renderSettings();if(cur==="lelek")renderLelek();if(cur==="vagyon")renderVagyon();if(cur==="celok")renderGoals();if(cur==="bolt")renderBolt()}
+
+$("napCalBtn").onclick=function(){$("napCal").hidden=false;$("napMon").hidden=true;this.setAttribute("aria-pressed","true");$("napMonBtn").setAttribute("aria-pressed","false")};
+$("napMonBtn").onclick=function(){$("napCal").hidden=true;$("napMon").hidden=false;this.setAttribute("aria-pressed","true");$("napCalBtn").setAttribute("aria-pressed","false")};
+/* iOS billentyűzet: a felugró lapok a látható képernyőhöz igazodnak */
+if(window.visualViewport){var vvFix=function(){var vv=window.visualViewport,r=document.documentElement.style;r.setProperty("--vvh",vv.height+"px");r.setProperty("--vvt",vv.offsetTop+"px")};visualViewport.addEventListener("resize",vvFix);visualViewport.addEventListener("scroll",vvFix)}
+/* ---------- HALLOWEEN ---------- */
+var HW_DAYS={},HW_PUMP='<svg viewBox="0 0 512 512" aria-hidden="true"><defs><radialGradient id="hwg" cx="50%" cy="55%" r="55%"><stop offset="0" stop-color="#FFB347"/><stop offset=".7" stop-color="#F57C1F"/><stop offset="1" stop-color="#B8520F"/></radialGradient></defs><rect x="236" y="72" width="40" height="70" rx="12" fill="#4F7A3A"/><ellipse cx="256" cy="300" rx="200" ry="170" fill="url(#hwg)"/><ellipse cx="176" cy="300" rx="80" ry="160" fill="none" stroke="#C45E12" stroke-width="10" opacity=".55"/><ellipse cx="336" cy="300" rx="80" ry="160" fill="none" stroke="#C45E12" stroke-width="10" opacity=".55"/><g fill="#FFE57A"><path d="M140 240 L215 280 L140 300 Z"/><path d="M372 240 L297 280 L372 300 Z"/><path d="M256 300 L224 352 L288 352 Z"/><path d="M130 370 Q256 460 382 370 L360 405 L328 385 L304 415 L272 388 L240 415 L208 385 L176 405 L152 370 Z"/></g></svg>';
+function hwOn(){var f=S.settings.hw;if(f==="on")return true;if(f==="off")return false;return !!HW_DAYS[today()]}
+var h1El=document.querySelector("header.top h1"),h1Text=h1El.textContent;
+function hwTitle(){h1El.textContent=h1Text;}
+function hwApply(){var on=hwOn();document.documentElement.classList.toggle("hw",on);hwTitle();
+  document.querySelectorAll(".hwseg button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.hw===(S.settings.hw||"auto"))});
+  if(on)hwStart();}
+(document.querySelector(".hwseg")||document.createElement("div")).addEventListener("click",function(e){var b=e.target.closest("[data-hw]");if(!b)return;S.settings.hw=b.dataset.hw==="auto"?null:b.dataset.hw;save();hwApply();toast(hwOn()?"Halloween-mód be. Boo.":"Halloween-mód ki.")});
+var hwStarted=false,batT=null;
+function hwBoo(){if(RM)return;var key="hw-boo-"+today();try{if(localStorage.getItem(key))return}catch(e){}
+  var d=document.createElement("div");d.id="boo";d.innerHTML='<b>BOOOOO!</b><span>Happy Halloween</span>';document.body.appendChild(d);
+  setTimeout(function(){d.remove()},2100);try{localStorage.setItem(key,"1")}catch(e){}}
+var BAT='<svg viewBox="0 0 48 28" fill="currentColor"><path d="M0 14 Q8 0 18 10 Q21 4 24 10 Q27 4 30 10 Q40 0 48 14 Q38 12 32 22 Q28 17 24 24 Q20 17 16 22 Q10 12 0 14Z"/></svg>';
+function hwBats(){if(RM||document.hidden||!hwOn())return;var c=document.createElement("div");c.className="bats";var n=8+Math.floor(Math.random()*5),rev=Math.random()<.5,maxD=0;
+  for(var i=0;i<n;i++){var b=document.createElement("div");b.className="bat"+(rev?" rev":"");var dur=3+Math.random()*2.2,dl=Math.random()*1.4;maxD=Math.max(maxD,dur+dl);
+    b.style.top=(8+Math.random()*60)+"%";b.style.setProperty("--d",dur+"s");b.style.setProperty("--dl",dl+"s");var sz=26+Math.random()*22;b.style.width=sz+"px";b.style.height=(sz*.58)+"px";b.innerHTML=BAT;c.appendChild(b)}
+  document.body.appendChild(c);setTimeout(function(){c.remove()},(maxD+.3)*1000)}
+function hwSchedule(){clearTimeout(batT);if(!hwOn()||RM)return;batT=setTimeout(function(){hwBats();hwSchedule()},20000+Math.random()*20000)}
+function hwStart(){if(hwStarted)return;hwStarted=true;setTimeout(hwBoo,350);setTimeout(hwBats,4500);hwSchedule()}
+document.addEventListener("visibilitychange",function(){if(!document.hidden&&hwOn())hwSchedule()});
+
+renderCats();renderQuick();renderAll();save();hwApply();
+setTimeout(checkPending,400);
+document.addEventListener("visibilitychange",function(){if(!document.hidden){renderAll();checkPending()}});
+})();
+</script>
+
+<script>
+// Android: telepítés gomb (Chrome), vagy útmutató (Samsung Internet)
+(function(){var standalone=matchMedia("(display-mode: standalone)").matches||window.navigator.standalone===true;
+  var seen=false;try{seen=localStorage.getItem("zs-a2hs")==="1"}catch(e){}
+  if(standalone||seen)return;
+  var deferred=null,b=document.createElement("div");b.className="banner warn";b.style.margin="12px 0 0";
+  var samsung=/SamsungBrowser/i.test(navigator.userAgent);
+  function show(txt,btnTxt){b.innerHTML='<div>'+txt+'</div><button class="btn" type="button" style="padding:8px 12px;font-size:13px">'+btnTxt+'</button>';
+    var v=document.getElementById("v-ma");if(!b.parentNode)v.insertBefore(b,v.firstChild);
+    b.querySelector("button").onclick=function(){if(deferred){deferred.prompt();deferred.userChoice.then(function(){b.remove();try{localStorage.setItem("zs-a2hs","1")}catch(e){}});}else{b.remove();try{localStorage.setItem("akos-a2hs","1")}catch(e){}}}}
+  window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferred=e;show("<b>Rakd fel appként.</b> Egy koppintás, és ott lesz a főképernyőn, saját ikonnal.","Telepítés")});
+  setTimeout(function(){if(!deferred&&!b.parentNode)show(samsung?"<b>Rakd a főképernyőre.</b> Lent a <b>☰ menü</b> → <b>Hozzáadás</b> → <b>Kezdőképernyő</b>.":"<b>Rakd a főképernyőre.</b> Jobbra fent a <b>⋮ menü</b> → <b>Alkalmazás telepítése</b> (vagy „Hozzáadás a kezdőképernyőhöz”).","Oké")},2500);})();
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+</script>
+</body>
+</html>
