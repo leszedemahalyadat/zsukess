@@ -330,6 +330,33 @@ nav.tabs button[aria-current="page"] svg{animation:bounce .35s ease-out forwards
 @keyframes flyrev{0%{transform:translate(0,0) scaleX(-1)}25%{transform:translate(-28vw,-18px) scaleX(-1)}50%{transform:translate(-56vw,10px) scaleX(-1)}75%{transform:translate(-84vw,-14px) scaleX(-1)}100%{transform:translate(-125vw,0) scaleX(-1)}}
 @keyframes flap{from{transform:scaleY(1)}to{transform:scaleY(.45)}}
 .hwseg{margin-top:10px}
+/* rémisztőbb BOO: villogás, arc, vér-felirat */
+#boo{background:#000;animation:booout .6s 3.6s forwards}
+#boo .flick{position:absolute;inset:0;background:#fff;opacity:0;animation:flick 1.1s steps(1) forwards}
+@keyframes flick{0%{opacity:0}8%{opacity:.9}12%{opacity:0}30%{opacity:.7}34%{opacity:0}55%{opacity:1}58%{opacity:0}80%{opacity:.6}84%{opacity:0}100%{opacity:0}}
+#boo .face{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;opacity:0;margin-bottom:-10px;animation:facein .25s 1.15s cubic-bezier(.2,1.8,.4,1) forwards,shake .5s 1.2s,facepulse 2s 1.5s ease-in-out infinite}
+#boo .face svg{width:min(62vw,300px);height:min(62vw,300px);filter:drop-shadow(0 0 30px rgba(255,0,40,.55))}
+@keyframes facein{from{opacity:0;transform:scale(.1)}to{opacity:1;transform:scale(1)}}
+@keyframes facepulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+#boo b{position:relative;z-index:2;color:#D40022;text-shadow:0 0 18px rgba(255,0,40,.9),0 0 2px #000;font-size:min(17vw,96px);animation:booin .35s 1.5s cubic-bezier(.2,1.6,.4,1) both,shake .6s 1.6s,drip 2.2s 1.9s ease-in forwards}
+@keyframes drip{to{transform:translateY(6px) scaleY(1.06);letter-spacing:.06em}}
+#boo span{position:relative;z-index:2;color:#9b1a2b;animation:booin .7s 2.2s both;margin-top:8px}
+#boo .eyes{position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,rgba(255,0,40,.18),transparent 55%)}
+.scare{position:fixed;inset:0;z-index:70;background:#000;display:flex;align-items:center;justify-content:center;animation:scareflash .45s steps(1) forwards;pointer-events:none}
+.scare svg{width:min(90vw,420px);height:min(90vw,420px);filter:drop-shadow(0 0 30px rgba(255,0,40,.6))}
+@keyframes scareflash{0%{opacity:1}100%{opacity:0;visibility:hidden}}
+.hw body,.hw .app{animation:none}
+.tremor{animation:tremor .4s linear}
+@keyframes tremor{0%,100%{transform:translate(0,0)}20%{transform:translate(-5px,3px)}40%{transform:translate(5px,-3px)}60%{transform:translate(-4px,-2px)}80%{transform:translate(4px,2px)}}
+.lightning{position:fixed;inset:0;z-index:50;background:#fff;pointer-events:none;animation:lightning .5s steps(1) forwards}
+@keyframes lightning{0%{opacity:.95}15%{opacity:0}30%{opacity:.7}45%{opacity:0}100%{opacity:0}}
+.peek{position:fixed;left:14px;bottom:calc(78px + env(safe-area-inset-bottom,0px));z-index:6;display:none;gap:10px;pointer-events:none}
+.hw .peek{display:flex}
+.peek i{width:14px;height:14px;border-radius:50%;background:#D40022;box-shadow:0 0 10px #ff2a4d;animation:blink 4s infinite}
+.peek i:nth-child(2){animation-delay:.1s}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.bat.red::after{content:"";position:absolute;left:44%;top:40%;width:3px;height:3px;border-radius:50%;background:#ff2a4d;box-shadow:5px 0 0 #ff2a4d,0 0 6px #ff2a4d}
+@media (prefers-reduced-motion:reduce){#boo .flick,#boo .face,.scare,.tremor,.lightning,.peek i{animation:none}}
 @media (prefers-reduced-motion:reduce){.hw .hwlogo,.hwlogo,#boo b,#boo span,.bat,.bat svg{animation:none}}
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:40}
 .crown{font-size:44px;line-height:1;margin-bottom:6px;display:inline-block;animation:pop .6s ease-out}
@@ -1251,15 +1278,22 @@ function hwApply(){var on=hwOn();document.documentElement.classList.toggle("hw",
 (document.querySelector(".hwseg")||document.createElement("div")).addEventListener("click",function(e){var b=e.target.closest("[data-hw]");if(!b)return;S.settings.hw=b.dataset.hw==="auto"?null:b.dataset.hw;save();hwApply();toast(hwOn()?"Halloween-mód be. Boo.":"Halloween-mód ki.")});
 var hwStarted=false,batT=null;
 function hwBoo(){if(RM)return;var key="hw-boo-"+today();try{if(localStorage.getItem(key))return}catch(e){}
-  var d=document.createElement("div");d.id="boo";d.innerHTML='<b>BOOOOO!</b><span>Happy Halloween</span>';document.body.appendChild(d);
-  setTimeout(function(){d.remove()},2100);try{localStorage.setItem(key,"1")}catch(e){}}
+  var d=document.createElement("div");d.id="boo";d.innerHTML='<div class="flick"></div><div class="eyes"></div><div class="face">'+HW_FACE+'</div><b>BOOOOO!</b><span>Happy Halloween, Zsuzsanna…</span>';document.body.appendChild(d);
+  setTimeout(function(){document.body.classList.add("tremor")},1200);setTimeout(function(){document.body.classList.remove("tremor")},1700);
+  setTimeout(function(){d.remove()},4300);try{localStorage.setItem(key,"1")}catch(e){}}
+var HW_FACE='<svg viewBox="0 0 400 400"><defs><radialGradient id="fg" cx="50%" cy="45%" r="55%"><stop offset="0" stop-color="#2a0a12"/><stop offset="1" stop-color="#000"/></radialGradient><radialGradient id="eg" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="#ff2a4d"/><stop offset="1" stop-color="#6b0014" stop-opacity="0"/></radialGradient></defs><ellipse cx="200" cy="210" rx="150" ry="170" fill="url(#fg)"/><ellipse cx="140" cy="170" rx="58" ry="42" fill="url(#eg)"/><ellipse cx="260" cy="170" rx="58" ry="42" fill="url(#eg)"/><ellipse cx="140" cy="172" rx="14" ry="22" fill="#000"/><ellipse cx="260" cy="172" rx="14" ry="22" fill="#000"/><path d="M110 290 Q200 400 290 290 Q250 330 200 318 Q150 330 110 290Z" fill="#0a0002"/><path d="M130 296 L142 326 L154 298 M246 298 L258 326 L270 296" stroke="#eee" stroke-width="6" fill="none" stroke-linecap="round"/></svg>';
+function hwScare(){if(RM||document.hidden||!hwOn())return;var key="hw-scare-"+today();try{if(localStorage.getItem(key))return;localStorage.setItem(key,"1")}catch(e){}
+  var d=document.createElement("div");d.className="scare";d.innerHTML=HW_FACE;document.body.appendChild(d);document.body.classList.add("tremor");
+  setTimeout(function(){document.body.classList.remove("tremor")},450);setTimeout(function(){d.remove()},600)}
+function hwLightning(){if(RM||document.hidden||!hwOn())return;var d=document.createElement("div");d.className="lightning";document.body.appendChild(d);document.body.classList.add("tremor");
+  setTimeout(function(){document.body.classList.remove("tremor")},450);setTimeout(function(){d.remove()},600)}
 var BAT='<svg viewBox="0 0 48 28" fill="currentColor"><path d="M0 14 Q8 0 18 10 Q21 4 24 10 Q27 4 30 10 Q40 0 48 14 Q38 12 32 22 Q28 17 24 24 Q20 17 16 22 Q10 12 0 14Z"/></svg>';
-function hwBats(){if(RM||document.hidden||!hwOn())return;var c=document.createElement("div");c.className="bats";var n=8+Math.floor(Math.random()*5),rev=Math.random()<.5,maxD=0;
-  for(var i=0;i<n;i++){var b=document.createElement("div");b.className="bat"+(rev?" rev":"");var dur=3+Math.random()*2.2,dl=Math.random()*1.4;maxD=Math.max(maxD,dur+dl);
+function hwBats(){if(RM||document.hidden||!hwOn())return;var c=document.createElement("div");c.className="bats";var n=14+Math.floor(Math.random()*7),rev=Math.random()<.5,maxD=0;
+  for(var i=0;i<n;i++){var b=document.createElement("div");b.className="bat"+(rev?" rev":"")+(Math.random()<.4?" red":"");var dur=2+Math.random()*1.8,dl=Math.random()*1.6;maxD=Math.max(maxD,dur+dl);
     b.style.top=(8+Math.random()*60)+"%";b.style.setProperty("--d",dur+"s");b.style.setProperty("--dl",dl+"s");var sz=26+Math.random()*22;b.style.width=sz+"px";b.style.height=(sz*.58)+"px";b.innerHTML=BAT;c.appendChild(b)}
   document.body.appendChild(c);setTimeout(function(){c.remove()},(maxD+.3)*1000)}
-function hwSchedule(){clearTimeout(batT);if(!hwOn()||RM)return;batT=setTimeout(function(){hwBats();hwSchedule()},20000+Math.random()*20000)}
-function hwStart(){if(hwStarted)return;hwStarted=true;setTimeout(hwBoo,350);setTimeout(hwBats,4500);hwSchedule()}
+function hwSchedule(){clearTimeout(batT);if(!hwOn()||RM)return;batT=setTimeout(function(){if(Math.random()<.35)hwLightning();else hwBats();hwSchedule()},15000+Math.random()*20000)}
+function hwStart(){if(hwStarted)return;hwStarted=true;setTimeout(hwBoo,350);setTimeout(hwBats,5500);setTimeout(hwScare,45000+Math.random()*60000);hwSchedule();if(!document.querySelector(".peek")){var pk=document.createElement("div");pk.className="peek";pk.innerHTML="<i></i><i></i>";document.body.appendChild(pk)}}
 document.addEventListener("visibilitychange",function(){if(!document.hidden&&hwOn())hwSchedule()});
 
 renderCats();renderQuick();renderAll();save();hwApply();
