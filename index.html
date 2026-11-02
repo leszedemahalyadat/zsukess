@@ -717,7 +717,7 @@ nav.tabs button[aria-current="page"]{background:transparent}
         </div>
         <button class="btn block" id="wSnap" type="button">Havi összesítés rögzítése</button>
       </div>
-      <div class="seg three wsub" role="group" aria-label="Vagyon nézet"><button type="button" data-wt="acc" aria-pressed="true">Számlák</button><button type="button" data-wt="debt" aria-pressed="false">Tartozások</button><button type="button" data-wt="hist" aria-pressed="false">Hónapok</button></div>
+      <div class="seg three wsub" role="group" aria-label="Vagyon nézet"><button type="button" data-wt="acc" aria-pressed="true">Számlák</button><button type="button" data-wt="debt" aria-pressed="false">Neked tartoznak</button><button type="button" data-wt="hist" aria-pressed="false">Hónapok</button></div>
       <div class="card" id="wPaneAcc">
         <div id="wAcc"></div>
         <button type="button" class="addlink" id="wNewToggle">+ Új számla</button>
@@ -725,9 +725,9 @@ nav.tabs button[aria-current="page"]{background:transparent}
         <div class="muted" style="font-size:12px;margin-top:10px">A beírt bevételek és kiadások maguktól mozgatják. Ha eltér a valóságtól, írd át.</div>
       </div>
       <div class="card" id="wPaneDebt" hidden>
-        <div class="muted" style="margin-bottom:6px">Amit mások tartoznak neked. Beleszámít a vagyonba.</div>
+        <div class="muted" style="margin-bottom:6px">Ezzel tartoznak neked mások (haver, család, vendég). Beleszámít a vagyonba, és ha megjött, egy gombbal bevétel lesz.</div>
         <div id="wDebts"></div>
-        <button type="button" class="addlink" id="wDebtToggle">+ Új tartozás</button>
+        <button type="button" class="addlink" id="wDebtToggle">+ Új: valaki tartozik neked</button>
         <div class="addbox" id="wDebtBox" hidden><input id="wDebtWho" placeholder="Ki tartozik? (pl. Kati)" maxlength="30"><div class="row2"><input id="wDebtAmt" inputmode="numeric" placeholder="Mennyivel? Ft"><button class="btn" type="button" id="wDebtAdd">Hozzáadom</button></div></div>
       </div>
       <div class="card" id="wPaneHist" hidden>
@@ -1441,12 +1441,12 @@ function renderVagyon(){ensureWealth();var w=S.wealth,tot=wealthTotal(),h=w.hist
   $("wAcc").innerHTML=GROUPS.map(function(g){var rows=WACC().filter(function(a){return grpOf(a[0])===g[0]}),sum=rows.reduce(function(t,a){return t+(+w.acc[a[0]]||0)},0);
     var eurHtml="";if(g[0]==="cash"){var ef=Math.round((+w.eur||0)*(+w.rate||0));sum+=ef;eurHtml='<div class="wrow2">'+ico("eur","€")+'<div class="nm">Euró<br><small id="wEurFt">= '+ft(ef)+'</small></div><div style="display:flex;gap:6px;align-items:baseline"><input id="wEur" inputmode="numeric" placeholder="0" style="width:84px" value="'+(w.eur?n0(w.eur):"")+'"><span class="muted">€ ×</span><input id="wRate" inputmode="numeric" placeholder="400" style="width:60px" value="'+(w.rate?n0(w.rate):"")+'"></div></div>'}
     return '<div class="wgrp'+(S.wealth.coll[g[0]]?" closed":"")+'" data-grp="'+g[0]+'"><div class="wgrp-h" role="button"><span class="label">'+g[1]+'</span><span class="sum num">'+ft(sum)+'</span><span class="chev">▾</span></div><div class="wgrp-b">'+rows.map(accRow).join("")+eurHtml+'</div></div>'}).join("")+
-    '<div class="wgrp"><div class="wgrp-h" role="button" data-go-debt><span class="label">Kintlévőség</span><span class="sum num">'+ft(debtsTotal())+'</span><span class="chev">›</span></div></div>';
+    '<div class="wgrp"><div class="wgrp-h" role="button" data-go-debt><span class="label">Neked tartoznak</span><span class="sum num">'+ft(debtsTotal())+'</span><span class="chev">›</span></div></div>';
   $("wDebts").innerHTML=w.debts.length?w.debts.map(function(dd){return '<div class="wrow2 noico"><div class="nm">'+esc(dd.who)+'<small>'+ft(dd.amount)+(dd.since?" · "+dd.since:"")+'</small></div><div style="display:flex;gap:6px;align-items:center"><button type="button" class="btn" data-debt-got="'+dd.id+'" style="padding:8px 12px;font-size:13px">Megjött</button><button type="button" class="x" data-debt-del="'+dd.id+'" aria-label="Törlés">×</button></div></div>'}).join(""):'<div class="empty">Senki nem tartozik.</div>';
   var already=h.some(function(x){return x.ym===ym});
   $("wSnap").textContent=already?"Havi összesítés frissítése":"Havi összesítés rögzítése";
   $("wHist").innerHTML=h.length?h.slice().reverse().slice(0,12).map(function(x,i,arr){var pr=arr[i+1],dd=pr?x.total-pr.total:null,mf2=monthFlow(x.ym),r2=mf2.inc>0&&dd!=null?Math.round(dd/mf2.inc*100):null;
-    return '<div class="whist"><div><b>'+HU_MON.format(parseYmd(x.ym+"-01"))+'</b><div class="d muted">'+WACC().map(function(a){return x.acc[a[0]]?a[1]+" "+k(x.acc[a[0]]):""}).filter(Boolean).join(" · ")+(x.eur?" · €"+n0(x.eur):"")+(x.debts?" · tartozás "+k(x.debts):"")+(r2!=null?'<br>Megmaradt a bevételből: <b>'+r2+' %</b>':'')+'</div></div><div><div class="tot num">'+k(x.total)+'</div><span class="chg num" style="color:'+(dd==null?"var(--muted)":dd>=0?"var(--good)":"var(--bad)")+'">'+(dd==null?"első":(dd>=0?"+":"")+k(dd))+'</span></div></div>'}).join(""):'<div class="empty">Még nincs rögzített hónap. Nyomd meg fent a rögzítés gombot.</div>';
+    return '<div class="whist"><div><b>'+HU_MON.format(parseYmd(x.ym+"-01"))+'</b><div class="d muted">'+WACC().map(function(a){return x.acc[a[0]]?a[1]+" "+k(x.acc[a[0]]):""}).filter(Boolean).join(" · ")+(x.eur?" · €"+n0(x.eur):"")+(x.debts?" · neked tartoznak "+k(x.debts):"")+(r2!=null?'<br>Megmaradt a bevételből: <b>'+r2+' %</b>':'')+'</div></div><div><div class="tot num">'+k(x.total)+'</div><span class="chg num" style="color:'+(dd==null?"var(--muted)":dd>=0?"var(--good)":"var(--bad)")+'">'+(dd==null?"első":(dd>=0?"+":"")+k(dd))+'</span></div></div>'}).join(""):'<div class="empty">Még nincs rögzített hónap. Nyomd meg fent a rögzítés gombot.</div>';
   $("wPaneAcc").hidden=wTab!=="acc";$("wPaneDebt").hidden=wTab!=="debt";$("wPaneHist").hidden=wTab!=="hist";
   document.querySelectorAll(".wsub button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.wt===wTab)});
 }
@@ -1455,7 +1455,7 @@ $("wNewToggle").onclick=function(){var x=$("wNewBox");x.hidden=!x.hidden;if(!x.h
 $("wDebtToggle").onclick=function(){var x=$("wDebtBox");x.hidden=!x.hidden;if(!x.hidden)$("wDebtWho").focus()};
 $("wAcc").addEventListener("input",function(e){var el=e.target.closest("[data-wa]");if(!el)return;var v=digits(el.value);el.value=v==null?"":n0(v);S.wealth.acc[el.dataset.wa]=v||0;save();
   var tot=wealthTotal();$("wTotal").textContent=ft(tot)});
-$("wAcc").addEventListener("change",function(){renderVagyon()});
+$("wAcc").addEventListener("change",function(){setTimeout(renderVagyon,0)});
 $("wAcc").addEventListener("click",function(e){var b=e.target.closest("[data-wdel-acc]");if(!b)return;var id=b.dataset.wdelAcc,c=S.wealth.custom.filter(function(x){return x.id===id})[0];if(!c)return;
   S.wealth.custom=S.wealth.custom.filter(function(x){return x.id!==id});var bal=S.wealth.acc[id];delete S.wealth.acc[id];save();renderVagyon();
   toast("Számla törölve: "+c.name,function(){S.wealth.custom.push(c);S.wealth.acc[id]=bal;save();renderVagyon()})});
@@ -1748,7 +1748,7 @@ function memoStart(){var E=["🥦","🍫","🧘","💅","📚","👶"],deck=E.co
 var WN_VER="2",WN_STEPS=[
  {e:"✨",t:"Megújult a zsuKe$$",p:"Új, üveges kinézet, a megszokott színekkel. Minden adatod megvan: tételek, számlák, célok, beállítások. Lapozz végig, 1 perc az egész.",l:[]},
  {e:"🕐",t:"Ma fül: a napi keret",p:"A nagy szám mutatja, mennyit költhetsz még ma.",l:[["🟢","Zöld: rendben vagy. Sárga: fogy a keret. Piros: túllépted."],["🔵","Minden tételsor elején színes ikon mutatja, mi az."],["✕","Törlés a sor végén lévő ×-szel. Ha véletlen volt, alul megjelenik a „Visszavonás”."],["🌙","Este nyomd meg a „Nap lezárása” gombot – ezért jár a dicséret és a pont."]]},
- {e:"📈",t:"Vagyon fül",p:"Egy helyen az összes számlád és a teljes vagyonod.",l:[["📊","Vonal mutatja, hogyan alakult hónapról hónapra (3 hó / 6 hó / 1 év / Mind)."],["🏦","Számlák csoportokban, mindegyiknél látszik a változás %-ban."],["🤝","Tartozások: ha megjött a pénz, nyomd meg a „Megjött” gombot, és bekerül bevételként."],["💾","Hónap végén a „Havi összesítés rögzítése” gombbal mented az állást."]]},
+ {e:"📈",t:"Vagyon fül",p:"Egy helyen az összes számlád és a teljes vagyonod.",l:[["📊","Vonal mutatja, hogyan alakult hónapról hónapra (3 hó / 6 hó / 1 év / Mind)."],["🏦","Számlák csoportokban, mindegyiknél látszik a változás %-ban."],["🤝","Neked tartoznak: ha megjött a pénz, nyomd meg a „Megjött” gombot, és bekerül bevételként."],["💾","Hónap végén a „Havi összesítés rögzítése” gombbal mented az állást."]]},
  {e:"🏆",t:"Új: 7 napos kihívás",p:"A Ma fülön, a Küldetések felett találod.",l:[["✅","Egy nap akkor számít, ha írtál be tételt ÉS lezártad a napot."],["7️⃣","7 nap egymás után = 1 zseton. Egy kihagyott nap nullázza."],["🪙","A zsetont játékra válthatod a Játék fülön."]]},
  {e:"🎮",t:"Új: Játék fül",p:"Zsetonból játék – mindegyik pontot ér a Spóroló szintedhez.",l:[["🐷","Pénzeső: kapd el a hulló érméket a malaccal."],["🎟️","Kaparós sorsjegy: kapard le a 9 mezőt, 3 egyforma = nyeremény."],["🧠","Malac memória: találd meg a 6 párt kevés lépésből."],["🔒","A játékok sorban nyílnak: az 1., 2. és 3. teljesített kihívás után."]]},
  {e:"🌸",t:"Apróbb változások",p:"",l:[["💗","Lélek: a nagy szám a havi maradék, nem a napi."],["🛒","Bolt: hétfőtől szerdáig nyugodt, csak csütörtöktől figyelmeztet."],["🎯","Célok: egy nagy „+ Befizetés” gomb, a többi a ··· mögött."],["📅","Napló: a naptárban színes pötty jelzi a napokat."],["⚙️","Beállítás: összecsukható kártyák. Ezt az útmutatót ott bármikor újranézheted."]]}
@@ -1764,7 +1764,7 @@ function wnShow(){var st=WN_STEPS[wnI],last=wnI===WN_STEPS.length-1;
   $("wnNext").onclick=function(){if(last)wnClose();else{wnI++;wnShow()}};var pv=$("wnPrev");if(pv)pv.onclick=function(){wnI--;wnShow()}}
 function wnOpen(){wnI=0;$("wn").hidden=false;document.body.style.overflow="hidden";wnShow()}
 function wnClose(){$("wn").hidden=true;document.body.style.overflow="";S.settings.wn=WN_VER;save()}
-function whatsNew(){if(S.settings.wn===WN_VER)return;var fresh=!S.entries.length&&!Object.keys(S.closed||{}).length;if(fresh){S.settings.wn=WN_VER;save();return}if(!$("modal").hidden||!$("entry").hidden){setTimeout(whatsNew,1500);return}wnOpen()}
+function whatsNew(){if(S.settings.wn===WN_VER)return;var fresh=!Object.keys(S.closed||{}).length&&!S.entries.some(function(e){return !e.src});if(fresh){S.settings.wn=WN_VER;save();return}if(!$("modal").hidden||!$("entry").hidden){setTimeout(whatsNew,1500);return}wnOpen()}
 $("wnX").onclick=wnClose;document.addEventListener("click",function(e){if(e.target.closest("#wnAgain"))wnOpen()});
 
 /* ---------- fülek ---------- */
@@ -1777,7 +1777,7 @@ function go(tab){cur=tab;Object.keys(views).forEach(function(k){$(views[k]).hidd
   renderAll();window.scrollTo(0,0);moveInd()}
 document.querySelector("nav.tabs").addEventListener("click",function(e){var b=e.target.closest("[data-tab]");if(b)go(b.dataset.tab)});
 
-function renderAll(){resetCache();evalMissions();renderToday();renderQuests();if(cur==="naplo"){renderCal();renderMonth()}if(cur==="beall")renderSettings();if(cur==="lelek")renderLelek();if(cur==="vagyon")renderVagyon();if(cur==="celok")renderGoals();if(cur==="bolt")renderBolt();if(cur==="jatek")renderGames()}
+function renderAll(){if(!S.goals)S.goals=[];if(!S.missions)S.missions={};if(!S.closed)S.closed={};if(!S.ack)S.ack={};if(typeof ensureGoals==="function")ensureGoals();ensureWealth();resetCache();evalMissions();renderToday();renderQuests();if(cur==="naplo"){renderCal();renderMonth()}if(cur==="beall")renderSettings();if(cur==="lelek")renderLelek();if(cur==="vagyon")renderVagyon();if(cur==="celok")renderGoals();if(cur==="bolt")renderBolt();if(cur==="jatek")renderGames()}
 
 $("napCalBtn").onclick=function(){$("napCal").hidden=false;$("napMon").hidden=true;this.setAttribute("aria-pressed","true");$("napMonBtn").setAttribute("aria-pressed","false")};
 $("napMonBtn").onclick=function(){$("napCal").hidden=true;$("napMon").hidden=false;this.setAttribute("aria-pressed","true");$("napCalBtn").setAttribute("aria-pressed","false")};
